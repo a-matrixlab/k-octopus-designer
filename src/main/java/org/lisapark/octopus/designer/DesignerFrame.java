@@ -122,13 +122,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      * {@link #currentProcessingModel}
      */
     private LabelStatusBarItem modelNameStatusItem;
-    private JTextArea outputTxt;
-    
-//    private final String jurl;
-//    private final String rurl;
-//    private final Integer rport;
-//    private final String ruid;
-//    private final String rpsw;
+    private JTextArea outputTxt;   
     
     /**
      * 
@@ -141,15 +135,9 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      */
 
     public DesignerFrame(OctopusRepository repository, String jurl, String rurl, Integer rport, String ruid, String rpsw) {
-        super("Octopus");
+        super("K-Octopus");
         this.repository = repository;
-        
-//        this.jurl = jurl;
-//        this.rurl = rurl;
-//        this.rport = rport;
-//        this.ruid = ruid;
-//        this.rpsw = rpsw;
-
+       
         init();
     }
 
@@ -504,7 +492,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         @Override
         public void actionPerformed(ActionEvent e) {
             // todo better way to come up with initial name
-            setCurrentProcessingModel(new ProcessingModel("model"));
+            setCurrentProcessingModel(new ProcessingModel("model", "localhost:6379"));
         }
     }
 

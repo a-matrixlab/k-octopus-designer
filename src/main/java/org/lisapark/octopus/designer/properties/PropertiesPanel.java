@@ -133,23 +133,23 @@ public class PropertiesPanel extends JPanel {
 
             if (processor != null) {
                 Collection<Parameter> parameters = processor.getParameters();
-                for (Parameter parameter : parameters) {
+                parameters.forEach((parameter) -> {
                     newProperties.add(new ParameterProperty(parameter));
-                }
+                });
 
                 Collection<ProcessorInput> inputs = processor.getInputs();
-                for (ProcessorInput input : inputs) {
+                inputs.forEach((input) -> {
                     newProperties.add(new ProcessorInputProperty(input));
-                }
+                });
 
                 Collection<ProcessorJoin> joins = processor.getJoins();
-                for (ProcessorJoin join : joins) {
+                joins.forEach((join) -> {
                     ProcessorInput secondInput = join.getSecondInput();
                     ProcessorInput firstInput = join.getFirstInput();
 
                     newProperties.add(new ProcessorJoinProperty(join, firstInput, secondInput));
                     newProperties.add(new ProcessorJoinProperty(join, secondInput, firstInput));
-                }
+                });
 
                 newProperties.add(new ProcessorOutputProperty(processor.getOutput()));
             } else {
@@ -163,14 +163,14 @@ public class PropertiesPanel extends JPanel {
 
             if (externalSink != null) {
                 Collection<Parameter> parameters = externalSink.getParameters();
-                for (Parameter parameter : parameters) {
+                parameters.forEach((parameter) -> {
                     newProperties.add(new ParameterProperty(parameter));
-                }
+                });
 
                 Collection<? extends Input> inputs = externalSink.getInputs();
-                for (Input input : inputs) {
+                inputs.forEach((input) -> {
                     newProperties.add(new InputProperty(input));
-                }
+                });
             }
 
             setProperties(newProperties);
@@ -181,9 +181,9 @@ public class PropertiesPanel extends JPanel {
 
             if (externalSource != null) {
                 Collection<Parameter> parameters = externalSource.getParameters();
-                for (Parameter parameter : parameters) {
+                parameters.forEach((parameter) -> {
                     newProperties.add(new ParameterProperty(parameter));
-                }
+                });
 
                 newProperties.add(new OutputProperty(externalSource.getOutput(), eventTypeCellEditor));
             }
@@ -192,21 +192,26 @@ public class PropertiesPanel extends JPanel {
         }
 
         private void loadPropertiesForProcessingModel(ProcessingModel model) {
-            java.util.List<BaseProperty> newProperties = Lists.newArrayList();
+            java.util.List<BaseProperty> modelProps = Lists.newArrayList();
 
             if (model != null) {
-                final Parameter paramName = Parameter.stringParameterWithIdAndName(1, "Model Name")
-                        .defaultValue(model.getModelName())
-                        .required(true).build();
-                newProperties.add(new ParameterProperty(paramName));
+//                Parameter paramName = Parameter.stringParameterWithIdAndName(1, "Model Name")
+//                        .defaultValue(model.getModelName())
+//                        .required(true).build();
+//                modelProps.add(new ParameterProperty(paramName));
+//
+//                Parameter paramAuthor = Parameter.stringParameterWithIdAndName(1, "Model Author")
+//                        .defaultValue(model.getModelAuthor())
+//                        .required(true).build();
+//                modelProps.add(new ParameterProperty(paramAuthor));
+//                
+//                Parameter paramRepo = Parameter.stringParameterWithIdAndName(1, "Model Repo")
+//                        .defaultValue(model.getModelRepo())
+//                        .required(true).build();
+//                modelProps.add(new ParameterProperty(paramRepo));
+            } 
 
-                final Parameter paramAuthor = Parameter.stringParameterWithIdAndName(1, "Model Author")
-                        .defaultValue(model.getModelAuthor())
-                        .required(true).build();
-                newProperties.add(new ParameterProperty(paramAuthor));
-            }
-
-            setProperties(newProperties);
+            setProperties(modelProps);
         }
 
         private void setProperties(java.util.List<BaseProperty> newProperties) {
@@ -228,14 +233,12 @@ public class PropertiesPanel extends JPanel {
 
         @SuppressWarnings("unchecked")
         private void removePropertyChangeListeners(java.util.List<Property> properties) {
-            for (Property property : properties) {
+            properties.stream().map((property) -> {
                 property.removePropertyChangeListener(this);
-
-                if (property.hasChildren()) {
-
-                    removePropertyChangeListeners((java.util.List<Property>) property.getChildren());
-                }
-            }
+                return property;
+            }).filter((property) -> (property.hasChildren())).forEachOrdered((property) -> {
+                removePropertyChangeListeners((java.util.List<Property>) property.getChildren());
+            });
         }
 
         /**
