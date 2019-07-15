@@ -97,5 +97,10 @@ public class AbstractNodeTest {
         public Copyable copyOf() {
             return null;
         }
+
+        @Override
+        public Reproducible newInstance(String json) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 }
