@@ -432,7 +432,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
     private void setCurrentProcessingModel(ProcessingModel currentProcessingModel) {
         this.currentProcessingModel = currentProcessingModel;
-        modelNameStatusItem.setText(currentProcessingModel.getModelName());
+        modelNameStatusItem.setText(currentProcessingModel.getName());
 
         canvasPanel.setProcessingModel(currentProcessingModel);
         propertiesPanel.setProcessingModel(currentProcessingModel);
@@ -474,7 +474,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
             ProcessingModel modelToOpen = OpenModelDialog.openProcessingModel(DesignerFrame.this, repository);
 
             if (modelToOpen != null) {
-                LOG.debug("Opening processing model '{}'", modelToOpen.getModelName());
+                LOG.debug("Opening processing model '{}'", modelToOpen.getName());
 
                 setCurrentProcessingModel(modelToOpen);
             }
@@ -510,7 +510,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                 SaveModelDialog.saveProcessingModel(DesignerFrame.this, currentProcessingModel, repository);
 
                 // update the status bar with the updated name
-                modelNameStatusItem.setText(currentProcessingModel.getModelName());
+                modelNameStatusItem.setText(currentProcessingModel.getName());
             }
         }
     }
@@ -543,7 +543,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                 try {
                     compiler.compile(currentProcessingModel);
 
-                    outputTxt.append(currentProcessingModel.getModelName() + " compiled successfully.\n");
+                    outputTxt.append(currentProcessingModel.getName() + " compiled successfully.\n");
                     
                     String modelJson        = currentProcessingModel.toJson();                    
                     JsonParser parser       = new JsonParser();
@@ -578,13 +578,13 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                 compiler.setStandardOut(stream);
                 compiler.setStandardError(stream);
                 try {
-                    outputTxt.append("Running model '" + currentProcessingModel.getModelName() + "'. Please wait...\n");
+                    outputTxt.append("Running model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n");
                     ProcessingRuntime runtime = compiler.compile(currentProcessingModel);
                     // todo do we need a stop button and lock out ui?
                     runtime.start();
                     runtime.shutdown();
 
-                    outputTxt.append("Model '" + currentProcessingModel.getModelName() + "' completed running.\n");
+                    outputTxt.append("\n Model '" + currentProcessingModel.getName() + "' completed running.\n");
                 } catch (ValidationException e1) {
                     outputTxt.append(e1.getLocalizedMessage() + "\n");
                 }

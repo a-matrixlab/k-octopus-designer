@@ -86,7 +86,7 @@ public class SaveModelDialog extends StandardDialog {
                 okButton.setEnabled(modelNameTxt.getText().trim().length() > 0);
             }
         });
-        modelNameTxt.setText(modelToSave.getModelName());
+        modelNameTxt.setText(modelToSave.getName());
 
         modelNameLbl.setLabelFor(modelNameTxt);
 
@@ -157,7 +157,7 @@ public class SaveModelDialog extends StandardDialog {
      * and store the model to the {@link #repository}
      */
     private void onSave() {
-        modelToSave.setModelName(modelNameTxt.getText());
+        modelToSave.setName(modelNameTxt.getText());
 
         try {
 

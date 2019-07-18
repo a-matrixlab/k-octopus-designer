@@ -19,6 +19,7 @@ import java.util.UUID;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
+import org.lisapark.koctopus.core.graph.Gnode;
 
 /**
  * @author dave sinclair(david.sinclair@lisa-park.com)
@@ -99,7 +100,7 @@ public class AbstractNodeTest {
         }
 
         @Override
-        public Reproducible newInstance(String json) {
+        public Reproducible newInstance(Gnode gnode) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }

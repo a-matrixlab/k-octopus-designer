@@ -201,7 +201,7 @@ public class OpenModelDialog extends StandardDialog {
     private List<String> getModelList(List<ProcessingModel> processingModelsByName) {
         List<String> modelNameList = Lists.newArrayList();
         processingModelsByName.forEach((model) -> {
-            modelNameList.add(model.getModelName());
+            modelNameList.add(model.getName());
         });
         return modelNameList;
     }
