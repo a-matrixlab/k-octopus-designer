@@ -101,7 +101,8 @@ Contributors:
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>r09</version>
+            <version>22.0</version>
+            <type>jar</type>
         </dependency>
 
         
@@ -189,7 +190,7 @@ Contributors:
             <version>3.4.7</version>
         </dependency>
         
-        <dependency>
+        <!--dependency>
             <groupId>com.google.gdata</groupId>
             <artifactId>com.google.gdata.spreadsheet</artifactId>
             <version>3.0</version>
@@ -200,7 +201,7 @@ Contributors:
             <artifactId>com.google.gdata.core</artifactId>
             <version>1.0</version>
             <type>jar</type>
-        </dependency>
+        </dependency-->
         
         <dependency>
             <groupId>org.apache.commons</groupId>
