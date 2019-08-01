@@ -31,7 +31,7 @@ import org.lisapark.koctopus.core.Node;
 import org.lisapark.koctopus.core.ProcessingModel;
 import org.lisapark.koctopus.core.ValidationException;
 import org.lisapark.koctopus.core.compiler.esper.EsperCompiler;
-import org.lisapark.koctopus.core.processor.Processor;
+import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.runtime.ProcessingRuntime;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
 import org.lisapark.koctopus.core.source.external.ExternalSource;
@@ -61,6 +61,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.PrintStream;
 import java.util.List;
+import org.lisapark.koctopus.core.graph.Graph;
+import org.lisapark.koctopus.core.graph.GraphUtils;
 
 /**
  * This is the main {@link JFrame} for the Octopus Designer application.
@@ -224,8 +226,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         this.propertiesPanel = new PropertiesPanel();
 
         NodeSelectionListener nodeSelectionListener = (Node node) -> {
-            if (node instanceof Processor) {
-                propertiesPanel.setSelectedProcessor((Processor) node);
+            if (node instanceof AbstractProcessor) {
+                propertiesPanel.setSelectedProcessor((AbstractProcessor) node);
                 
             } else if (node instanceof ExternalSource) {
                 propertiesPanel.setSelectedExternalSource((ExternalSource) node);
@@ -415,7 +417,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
     /**
      * This method will load all the initial data from the {@link #repository}.
-     * This includes all the template {@link Processor}s,
+     * This includes all the template {@link AbstractProcessor}s,
      * {@link ExternalSource}s and {@link ExternalSink}s. The method will then
      * give this data to the appropriate views.
      */
@@ -426,7 +428,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         List<ExternalSource> sourceTemplates = repository.getAllExternalSourceTemplates();
         palettePanel.setExternalSources(sourceTemplates);
 
-        List<Processor> processorTemplates = repository.getAllProcessorTemplates();
+        List<AbstractProcessor> processorTemplates = repository.getAllProcessorTemplates();
         palettePanel.setProcessors(processorTemplates);
     }
 
@@ -545,14 +547,16 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
                     outputTxt.append(currentProcessingModel.getName() + " compiled successfully.\n");
                     
-                    String modelJson        = currentProcessingModel.toJson();                    
-                    JsonParser parser       = new JsonParser();
-                    JsonElement jsonElement = parser.parse(modelJson);
+                    Graph graph = GraphUtils.compileGraph(currentProcessingModel);
+                    
+//                    String modelJson        = currentProcessingModel.toJson();                    
+//                    JsonParser parser       = new JsonParser();
+//                    JsonElement jsonElement = parser.parse(modelJson);
 
                     Gson gson   = new GsonBuilder().setPrettyPrinting().create();
-                    String json = gson.toJson(jsonElement);
+                    String json = gson.toJson(graph.toJson());
                     
-                    outputTxt.append("Model JSON:\n" + json);
+                    outputTxt.append("Model JSON:\n" + json + "\n\n");
 
                 } catch (ValidationException ex) {
                     outputTxt.append(ex.getLocalizedMessage() + "\n");

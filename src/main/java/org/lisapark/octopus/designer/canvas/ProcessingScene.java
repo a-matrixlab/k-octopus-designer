@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 import org.lisapark.koctopus.core.Input;
 import org.lisapark.koctopus.core.Node;
 import org.lisapark.koctopus.core.ProcessingModel;
-import org.lisapark.koctopus.core.processor.Processor;
+import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.sink.Sink;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
 import org.lisapark.koctopus.core.source.Source;
@@ -105,8 +105,8 @@ public class ProcessingScene extends GraphPinScene<Node, Connection, Pin> {
             addExternalSource(externalSource);
         }
 
-        Set<Processor> processors = model.getProcessors();
-        for (Processor processor : processors) {
+        Set<AbstractProcessor> processors = model.getProcessors();
+        for (AbstractProcessor processor : processors) {
             addProcessor(processor);
         }
 
@@ -135,7 +135,7 @@ public class ProcessingScene extends GraphPinScene<Node, Connection, Pin> {
         }
 
         // now connect everything - we do this by way of examining the inputs for a Processor
-        for (Processor processor : processors) {
+        for (AbstractProcessor processor : processors) {
             Collection<Input> inputs = processor.getInputs();
 
             for (Input input : inputs) {
@@ -251,7 +251,7 @@ public class ProcessingScene extends GraphPinScene<Node, Connection, Pin> {
         }
     }
 
-    public void addProcessor(Processor<?> processor) {
+    public void addProcessor(AbstractProcessor<?> processor) {
         // make sure we have never seen this processor before
         if (findStoredObject(processor) == null) {
             model.addProcessor(processor);
@@ -278,7 +278,7 @@ public class ProcessingScene extends GraphPinScene<Node, Connection, Pin> {
         }
     }
 
-    public void removeProcessor(Processor<?> processor) {
+    public void removeProcessor(AbstractProcessor<?> processor) {
         // make sure it is a valid processor
         if (findStoredObject(processor) != null) {
             model.removeProcessor(processor);
@@ -321,7 +321,7 @@ public class ProcessingScene extends GraphPinScene<Node, Connection, Pin> {
     }
 
     private WidgetAction getRemoveActionForNode(Node node) {
-        if (node instanceof Processor) {
+        if (node instanceof AbstractProcessor) {
             return removeProcessorAction;
 
         } else if (node instanceof ExternalSink) {

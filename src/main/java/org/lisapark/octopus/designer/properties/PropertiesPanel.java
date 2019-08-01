@@ -18,7 +18,7 @@ import org.lisapark.koctopus.core.Input;
 import org.lisapark.koctopus.core.Node;
 import org.lisapark.koctopus.core.ProcessingModel;
 import org.lisapark.koctopus.core.parameter.Parameter;
-import org.lisapark.koctopus.core.processor.Processor;
+import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.processor.ProcessorInput;
 import org.lisapark.koctopus.core.processor.ProcessorJoin;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
@@ -85,7 +85,7 @@ public class PropertiesPanel extends JPanel {
         return selectedNode == null || (!selectedNode.equals(node));
     }
 
-    public void setSelectedProcessor(Processor processor) {
+    public void setSelectedProcessor(AbstractProcessor processor) {
         if (isChangeOfSelection(processor)) {
             selectedNode = processor;
 
@@ -128,7 +128,7 @@ public class PropertiesPanel extends JPanel {
             setProperties(newProperties);
         }
 
-        private void loadPropertiesForProcessor(Processor<?> processor) {
+        private void loadPropertiesForProcessor(AbstractProcessor<?> processor) {
             java.util.List<BaseProperty> newProperties = Lists.newArrayList();
 
             if (processor != null) {

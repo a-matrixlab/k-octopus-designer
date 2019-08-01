@@ -10,7 +10,7 @@
  */
 package org.lisapark.octopus.designer.canvas.actions;
 
-import org.lisapark.koctopus.core.processor.Processor;
+import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.octopus.designer.canvas.ProcessingScene;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.widget.Widget;
@@ -19,7 +19,7 @@ import java.awt.event.KeyEvent;
 
 /**
  * This action responds to the user pressing the {@link KeyEvent#VK_DELETE} while a {@link Widget} is selected
- * in the scene. It will verify that the object for the widget is a {@link Processor} then call the
+ * in the scene. It will verify that the object for the widget is a {@link AbstractProcessor} then call the
  * {@link ProcessingScene#removeProcessor(org.lisapark.octopus.core.processor.Processor)} method.
  *
  * @author dave sinclair(david.sinclair@lisa-park.com)
@@ -36,8 +36,8 @@ public class RemoveProcessorAction extends WidgetAction.Adapter {
         if (event.getKeyChar() == KeyEvent.VK_DELETE) {
             Object object = processingScene.findObject(widget);
 
-            if (object != null && object instanceof Processor) {
-                Processor processor = (Processor) object;
+            if (object != null && object instanceof AbstractProcessor) {
+                AbstractProcessor processor = (AbstractProcessor) object;
 
                 processingScene.removeProcessor(processor);
                 return State.CONSUMED;

@@ -10,7 +10,7 @@
  */
 package org.lisapark.octopus.designer.dnd;
 
-import org.lisapark.koctopus.core.processor.Processor;
+import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
 import org.lisapark.koctopus.core.source.external.ExternalSource;
 import org.lisapark.octopus.designer.canvas.ProcessingScene;
@@ -107,7 +107,7 @@ public class NodeAcceptProvider implements AcceptProvider {
 
             if (acceptableFlavor != null) {
                 if (acceptableFlavor == ProcessorTransferable.FLAVOR) {
-                    Processor processor = (Processor) transferable.getTransferData(ProcessorTransferable.FLAVOR);
+                    AbstractProcessor processor = (AbstractProcessor) transferable.getTransferData(ProcessorTransferable.FLAVOR);
                     processor.setLocation(point);
 
                     LOG.debug("Dropping processor {} at location {}", processor, point);

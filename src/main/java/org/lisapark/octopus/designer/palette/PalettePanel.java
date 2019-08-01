@@ -13,7 +13,7 @@ package org.lisapark.octopus.designer.palette;
 import com.jidesoft.swing.JideScrollPane;
 import com.jidesoft.swing.JideTabbedPane;
 import org.lisapark.koctopus.core.Node;
-import org.lisapark.koctopus.core.processor.Processor;
+import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
 import org.lisapark.koctopus.core.source.external.ExternalSource;
 import org.lisapark.octopus.designer.DesignerIconsFactory;
@@ -35,7 +35,7 @@ import java.util.Locale;
  */
 public class PalettePanel extends JPanel {
 
-    private NodeListModel<Processor> processorListModel;
+    private NodeListModel<AbstractProcessor> processorListModel;
     private NodeListModel<ExternalSink> externalSinkListModel;
     private NodeListModel<ExternalSource> externalSourceListModel;
 
@@ -98,7 +98,7 @@ public class PalettePanel extends JPanel {
 
             @Override
             protected Transferable createTransferable(JComponent c) {
-                Processor processor = (Processor) processorList.getSelectedValue();
+                AbstractProcessor processor = (AbstractProcessor) processorList.getSelectedValue();
 
                 return new ProcessorTransferable(processor);
             }
@@ -171,7 +171,7 @@ public class PalettePanel extends JPanel {
         return list;
     }
 
-    public void setProcessors(java.util.List<Processor> processors) {
+    public void setProcessors(java.util.List<AbstractProcessor> processors) {
         processorListModel.setData(processors);
     }
 

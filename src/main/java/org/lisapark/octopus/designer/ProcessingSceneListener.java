@@ -10,7 +10,7 @@
  */
 package org.lisapark.octopus.designer;
 
-import org.lisapark.koctopus.core.processor.Processor;
+import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
 import org.lisapark.koctopus.core.source.external.ExternalSource;
 import org.lisapark.octopus.designer.properties.PropertiesPanel;
@@ -57,8 +57,8 @@ public class ProcessingSceneListener implements ObjectSceneListener {
         if (newSelection != null && newSelection.size() == 1) {
             Object selectedObject = newSelection.iterator().next();
 
-            if (selectedObject instanceof Processor) {
-                propertiesPanel.setSelectedProcessor((Processor) selectedObject);
+            if (selectedObject instanceof AbstractProcessor) {
+                propertiesPanel.setSelectedProcessor((AbstractProcessor) selectedObject);
 
             } else if (selectedObject instanceof ExternalSource) {
                 propertiesPanel.setSelectedExternalSource((ExternalSource) selectedObject);

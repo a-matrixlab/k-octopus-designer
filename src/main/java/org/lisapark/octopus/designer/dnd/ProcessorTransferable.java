@@ -10,7 +10,7 @@
  */
 package org.lisapark.octopus.designer.dnd;
 
-import org.lisapark.koctopus.core.processor.Processor;
+import org.lisapark.koctopus.core.processor.AbstractProcessor;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -20,21 +20,21 @@ import java.io.IOException;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * This {@link Transferable} is used to move {@link Processor}s between components for drag and drop
+ * This {@link Transferable} is used to move {@link AbstractProcessor}s between components for drag and drop
  * operations.
  *
  * @author dave sinclair(david.sinclair@lisa-park.com)
  * @see java.awt.datatransfer.Transferable
  */
 public class ProcessorTransferable implements Transferable {
-    public static final DataFlavor FLAVOR = new DataFlavor(Processor.class, "Processor Item");
+    public static final DataFlavor FLAVOR = new DataFlavor(AbstractProcessor.class, "Processor Item");
 
     /**
      * Processor we are transferring
      */
-    private final Processor processor;
+    private final AbstractProcessor processor;
 
-    public ProcessorTransferable(Processor processor) {
+    public ProcessorTransferable(AbstractProcessor processor) {
         checkArgument(processor != null, "processor cannot be null");
         this.processor = processor;
     }
