@@ -10,6 +10,7 @@
  */
 package org.lisapark.octopus.core;
 
+import com.fasterxml.uuid.Generators;
 import org.lisapark.koctopus.core.Node;
 import org.lisapark.koctopus.core.Reproducible;
 import org.lisapark.koctopus.core.AbstractNode;
@@ -82,11 +83,11 @@ public class AbstractNodeTest {
     private static class AbstractNodeImpl extends AbstractNode {
 
         private AbstractNodeImpl(String name, String description) {
-            super(UUID.randomUUID(), name, description);
+            super(Generators.timeBasedGenerator().generate(), name, description);
         }
 
         private AbstractNodeImpl() {
-            super(UUID.randomUUID());
+            super(Generators.timeBasedGenerator().generate());
         }
 
         @Override

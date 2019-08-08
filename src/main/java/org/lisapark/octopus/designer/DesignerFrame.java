@@ -10,10 +10,9 @@
  */
 package org.lisapark.octopus.designer;
 
+import com.fasterxml.uuid.Generators;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.jidesoft.action.CommandBar;
 import com.jidesoft.action.DefaultDockableBarDockableHolder;
 import com.jidesoft.action.DockableBarManager;
@@ -32,7 +31,6 @@ import org.lisapark.koctopus.core.ProcessingModel;
 import org.lisapark.koctopus.core.ValidationException;
 import org.lisapark.koctopus.core.compiler.esper.EsperCompiler;
 import org.lisapark.koctopus.core.processor.AbstractProcessor;
-import org.lisapark.koctopus.core.runtime.ProcessingRuntime;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
 import org.lisapark.koctopus.core.source.external.ExternalSource;
 import org.lisapark.octopus.designer.canvas.CanvasPanel;
@@ -61,8 +59,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.UUID;
 import org.lisapark.koctopus.core.graph.Graph;
 import org.lisapark.koctopus.core.graph.GraphUtils;
+import org.lisapark.koctopus.core.graph.api.GraphVocabulary;
+import org.lisapark.koctopus.core.runtime.AbstractRunner;
 
 /**
  * This is the main {@link JFrame} for the Octopus Designer application.
@@ -91,6 +92,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      * This is the current {@link ProcessingModel} we are working on
      */
     private ProcessingModel currentProcessingModel;
+
+    private Graph processingModelGraph = null;
     /**
      * The repository is used for retrieving and saving different Octopus
      * artifacts
@@ -124,22 +127,22 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      * {@link #currentProcessingModel}
      */
     private LabelStatusBarItem modelNameStatusItem;
-    private JTextArea outputTxt;   
-    
+    private JTextArea outputTxt;
+    private static final String DEFAILT_TRANS_URL = "redis://localhost";
+
     /**
-     * 
+     *
      * @param repository
      * @param jurl
      * @param rurl
      * @param rport
      * @param ruid
-     * @param rpsw 
+     * @param rpsw
      */
-
     public DesignerFrame(OctopusRepository repository, String jurl, String rurl, Integer rport, String ruid, String rpsw) {
         super("K-Octopus");
         this.repository = repository;
-       
+
         init();
     }
 
@@ -228,10 +231,10 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         NodeSelectionListener nodeSelectionListener = (Node node) -> {
             if (node instanceof AbstractProcessor) {
                 propertiesPanel.setSelectedProcessor((AbstractProcessor) node);
-                
+
             } else if (node instanceof ExternalSource) {
                 propertiesPanel.setSelectedExternalSource((ExternalSource) node);
-                
+
             } else if (node instanceof ExternalSink) {
                 propertiesPanel.setSelectedExternalSink((ExternalSink) node);
             } else {
@@ -438,6 +441,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
         canvasPanel.setProcessingModel(currentProcessingModel);
         propertiesPanel.setProcessingModel(currentProcessingModel);
+
+        processingModelGraph = GraphUtils.compileGraph(currentProcessingModel, DEFAILT_TRANS_URL);
     }
 
     /**
@@ -479,6 +484,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                 LOG.debug("Opening processing model '{}'", modelToOpen.getName());
 
                 setCurrentProcessingModel(modelToOpen);
+                
+                processingModelGraph = GraphUtils.compileGraph(modelToOpen, null);
             }
         }
     }
@@ -495,6 +502,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         public void actionPerformed(ActionEvent e) {
             // todo better way to come up with initial name
             setCurrentProcessingModel(new ProcessingModel("model", "localhost:6379"));
+            processingModelGraph = null;
         }
     }
 
@@ -510,7 +518,6 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         public void actionPerformed(ActionEvent e) {
             if (currentProcessingModel != null) {
                 SaveModelDialog.saveProcessingModel(DesignerFrame.this, currentProcessingModel, repository);
-
                 // update the status bar with the updated name
                 modelNameStatusItem.setText(currentProcessingModel.getName());
             }
@@ -541,27 +548,29 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (currentProcessingModel != null) {
-                org.lisapark.koctopus.core.compiler.Compiler compiler = new EsperCompiler();
-                try {
-                    compiler.compile(currentProcessingModel);
-
-                    outputTxt.append(currentProcessingModel.getName() + " compiled successfully.\n");
-                    
-                    Graph graph = GraphUtils.compileGraph(currentProcessingModel);
-                    
-//                    String modelJson        = currentProcessingModel.toJson();                    
-//                    JsonParser parser       = new JsonParser();
-//                    JsonElement jsonElement = parser.parse(modelJson);
-
-                    Gson gson   = new GsonBuilder().setPrettyPrinting().create();
-                    String json = gson.toJson(graph.toJson());
-                    
-                    outputTxt.append("Model JSON:\n" + json + "\n\n");
-
-                } catch (ValidationException ex) {
-                    outputTxt.append(ex.getLocalizedMessage() + "\n");
-                }
+                //                    compiler.compile(currentProcessingModel);                
+                outputTxt.append(currentProcessingModel.getName() + " compiled successfully.\n");
+               
+                processingModelGraph = GraphUtils.compileGraph(currentProcessingModel, null, true);
+                
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String json = gson.toJson(processingModelGraph.toJson());
+                outputTxt.append("Model JSON:\n" + json + "\n\n");
             }
+        }
+
+        private ProcessingModel resetUuid(ProcessingModel model) {
+            model.setId(Generators.timeBasedGenerator().generate());
+            model.getExternalSinks().forEach(sink -> {
+                sink.setId(Generators.timeBasedGenerator().generate());
+            });
+            model.getExternalSources().forEach(source -> {
+                source.setId(Generators.timeBasedGenerator().generate());
+            });
+            model.getProcessors().forEach(proc -> {
+                proc.setId(Generators.timeBasedGenerator().generate());
+            });
+            return model;
         }
     }
 
@@ -575,22 +584,32 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (currentProcessingModel != null) {
-                TextAreaOutStreamAdaptor writer = new TextAreaOutStreamAdaptor(outputTxt);
-
-                org.lisapark.koctopus.core.compiler.Compiler compiler = new EsperCompiler();
-                PrintStream stream = new PrintStream(writer);
-                compiler.setStandardOut(stream);
-                compiler.setStandardError(stream);
                 try {
-                    outputTxt.append("Running model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n");
-                    ProcessingRuntime runtime = compiler.compile(currentProcessingModel);
-                    // todo do we need a stop button and lock out ui?
-                    runtime.start();
-                    runtime.shutdown();
+                    TextAreaOutStreamAdaptor writer = new TextAreaOutStreamAdaptor(outputTxt);
 
-                    outputTxt.append("\n Model '" + currentProcessingModel.getName() + "' completed running.\n");
-                } catch (ValidationException e1) {
-                    outputTxt.append(e1.getLocalizedMessage() + "\n");
+                    PrintStream stream = new PrintStream(writer);
+                    
+                    if (processingModelGraph == null) {
+                        processingModelGraph = GraphUtils.compileGraph(currentProcessingModel, null);
+                    }
+
+                    String type = processingModelGraph.getType();
+
+                    AbstractRunner runner = (AbstractRunner) Class.forName(type).newInstance();
+                    runner.setStandardOut(stream);
+                    runner.setStandardError(stream);
+                    runner.setGraph(processingModelGraph);
+                    runner.init();
+                    runner.execute();
+
+                    outputTxt.append("\nRunning model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n\n");
+                    outputTxt.append("\n Model '" + currentProcessingModel.getName() + "' completed running.\n\n");
+
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    String json = gson.toJson(processingModelGraph.toJson());
+                    outputTxt.append("Model Execution Graph: \n" + json + "\n\n");
+                } catch (InterruptedException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                    outputTxt.append("\n\n" + ex.getLocalizedMessage() + "\n");
                 }
             }
         }
