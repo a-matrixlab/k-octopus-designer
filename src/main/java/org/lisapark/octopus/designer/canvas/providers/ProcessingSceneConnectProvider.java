@@ -25,7 +25,7 @@ import java.awt.*;
  */
 public class ProcessingSceneConnectProvider implements ConnectProvider {
 
-    private ProcessingScene scene;
+    private final ProcessingScene scene;
 
     public ProcessingSceneConnectProvider(ProcessingScene scene) {
         this.scene = scene;
@@ -69,7 +69,7 @@ public class ProcessingSceneConnectProvider implements ConnectProvider {
     /**
      * Called for checking whether a connection could be created between a specified source and target widget.
      * Called only when a hasCustomTargetWidgetResolver returns false.
-     * <p/>
+     * 
      * We only allows connections when the targetWidget is an {@link InputPin} and it is <b>not</b> already connected
      *
      * @param sourceWidget the source widget

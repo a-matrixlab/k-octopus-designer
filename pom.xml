@@ -13,8 +13,8 @@ Contributors:
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>k-octopus</groupId>
-    <artifactId>k-octopus-designer</artifactId>
+    <groupId>octopus</groupId>
+    <artifactId>octopus-designer</artifactId>
     <version>0.7</version>
     <packaging>jar</packaging>
 
@@ -63,10 +63,28 @@ Contributors:
             <id>Sun</id>
             <url>http://download.java.net/maven/2</url>
         </repository> 
-
     </repositories>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>8.2.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>8.2.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>8.2.0</version>
+        </dependency>
+        <!-- End of Lucene -->
         
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -93,18 +111,11 @@ Contributors:
         </dependency>
 
         <dependency>
-            <groupId>com.espertech</groupId>
-            <artifactId>esper</artifactId>
-            <version>4.3.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>22.0</version>
             <type>jar</type>
         </dependency>
-
         
         <dependency>
             <groupId>joda-time</groupId>
@@ -135,19 +146,6 @@ Contributors:
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-visual</artifactId>
             <version>RELEASE701</version>
-        </dependency>
-
-        <!-- DB4O -->
-        <dependency>
-            <groupId>com.db4o</groupId>
-            <artifactId>db4o-full-java5</artifactId>
-            <version>8.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.db4o</groupId>
-            <artifactId>db4o-tools-java5</artifactId>
-            <version>8.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -201,14 +199,7 @@ Contributors:
             <version>3.7</version>
             <type>jar</type>
         </dependency>
-        
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>2.7.3</version>
-            <type>jar</type>
-        </dependency>
-        
+       
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -227,44 +218,7 @@ Contributors:
             <artifactId>sardine</artifactId>
             <version>314</version>
         </dependency>
-        
-        <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>2.8.7</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>net.htmlparser.jericho</groupId>
-            <artifactId>jericho-html</artifactId>
-            <version>3.3</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-kernel</artifactId>
-            <version>1.9.2</version>
-            <type>jar</type>
-        </dependency>
-       
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>3.5.0</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j</artifactId>
-            <version>1.9.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-rest-graphdb</artifactId>
-            <version>1.9.3-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>
-        
+      
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
@@ -276,14 +230,19 @@ Contributors:
             <version>4.3.1</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>k-octopus-repo</artifactId>
-            <version>${project.version}</version>
+            <groupId>k-octopus</groupId>
+            <artifactId>k-octopus-core</artifactId>
+            <version>0.7</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>k-octopus-core</artifactId>
-            <version>${project.version}</version>
+            <groupId>k-octopus</groupId>
+            <artifactId>k-octopus-compute</artifactId>
+            <version>0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>k-octopus</groupId>
+            <artifactId>k-octopus-repo</artifactId>
+            <version>0.7</version>
         </dependency>
     </dependencies>
 
@@ -292,12 +251,50 @@ Contributors:
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>1.8</source>
-                    <target>1.8</target>
+                    <target>1.8</target>                    
                 </configuration>
             </plugin>
+            <!--plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.lisapark.octopus.designer.DesignerApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>assemble-all</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin-->
+            
+            <plugin>                
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>                           
+                            <mainClass>org.lisapark.octopus.designer.DesignerApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
@@ -314,28 +311,7 @@ Contributors:
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <dependencies>
-                    <!-- We need the db4o tooling for enhancing stuff -->
-                    <dependency>
-                        <groupId>com.db4o</groupId>
-                        <artifactId>db4o-tools-java5</artifactId>
-                        <version>8.1-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            </plugin>           
         </plugins>
 
     </build>

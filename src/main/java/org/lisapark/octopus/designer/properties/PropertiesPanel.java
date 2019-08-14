@@ -195,20 +195,10 @@ public class PropertiesPanel extends JPanel {
             java.util.List<BaseProperty> modelProps = Lists.newArrayList();
 
             if (model != null) {
-//                Parameter paramName = Parameter.stringParameterWithIdAndName(1, "Model Name")
-//                        .defaultValue(model.getModelName())
-//                        .required(true).build();
-//                modelProps.add(new ParameterProperty(paramName));
-//
-//                Parameter paramAuthor = Parameter.stringParameterWithIdAndName(1, "Model Author")
-//                        .defaultValue(model.getModelAuthor())
-//                        .required(true).build();
-//                modelProps.add(new ParameterProperty(paramAuthor));
-//                
-//                Parameter paramRepo = Parameter.stringParameterWithIdAndName(1, "Model Repo")
-//                        .defaultValue(model.getModelRepo())
-//                        .required(true).build();
-//                modelProps.add(new ParameterProperty(paramRepo));
+                Collection<Parameter> parameters = model.getParameters();
+                parameters.forEach((parameter) -> {
+                    modelProps.add(new ParameterProperty(parameter));
+                });
             } 
 
             setProperties(modelProps);

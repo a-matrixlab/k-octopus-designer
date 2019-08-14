@@ -9,7 +9,7 @@ http://www.eclipse.org/legal/epl-v10.html
 Contributors:
    Lisa Park, Inc. (www.lisa-park.net) - initial API and implementation and/or initial documentation
 -->
-<configuration debug="true">
+<configuration debug="false">
     <!-- Externalizing configuration file to system property
       http://logback.qos.ch/manual/configuration.html#configFileProperty -->
     <!-- Full Details on Layout Patterns at:

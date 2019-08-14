@@ -36,12 +36,12 @@ Contributors:
             <excludes>
                 <exclude>dist.xml</exclude>
             </excludes>
-            <outputDirectory>k-octopus-designer</outputDirectory>
+            <outputDirectory>octopus-designer</outputDirectory>
         </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>k-octopus-designer/lib</outputDirectory>
+            <outputDirectory>octopus-designer/lib</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <unpack>false</unpack>
             <scope>runtime</scope>

@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author dave sinclair(david.sinclair@lisa-park.com)
  */
 class TextAreaOutStreamAdaptor extends OutputStream {
-    private JTextArea textArea;
+    private final JTextArea textArea;
 
     public TextAreaOutStreamAdaptor(JTextArea textArea) {
         checkArgument(textArea != null, "textArea cannot be null");
@@ -63,11 +63,8 @@ class TextAreaOutStreamAdaptor extends OutputStream {
     }
 
     private void updateCaretPosition() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                textArea.setCaretPosition(textArea.getDocument().getLength());
-            }
+        SwingUtilities.invokeLater(() -> {
+            textArea.setCaretPosition(textArea.getDocument().getLength());
         });
     }
 }

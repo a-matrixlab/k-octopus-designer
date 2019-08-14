@@ -10,7 +10,6 @@
  */
 package org.lisapark.octopus.designer;
 
-import com.fasterxml.uuid.Generators;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jidesoft.action.CommandBar;
@@ -28,8 +27,6 @@ import com.jidesoft.swing.JidePopupMenu;
 import com.jidesoft.swing.JideScrollPane;
 import org.lisapark.koctopus.core.Node;
 import org.lisapark.koctopus.core.ProcessingModel;
-import org.lisapark.koctopus.core.ValidationException;
-import org.lisapark.koctopus.core.compiler.esper.EsperCompiler;
 import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
 import org.lisapark.koctopus.core.source.external.ExternalSource;
@@ -59,11 +56,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.PrintStream;
 import java.util.List;
-import java.util.UUID;
 import org.lisapark.koctopus.core.graph.Graph;
 import org.lisapark.koctopus.core.graph.GraphUtils;
-import org.lisapark.koctopus.core.graph.api.GraphVocabulary;
 import org.lisapark.koctopus.core.runtime.AbstractRunner;
+import org.lisapark.koctopus.util.Pair;
 
 /**
  * This is the main {@link JFrame} for the Octopus Designer application.
@@ -117,10 +113,10 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
     private final ExitAction exitAction = new ExitAction(
             "Exit", "Exit from designer", KeyEvent.VK_X);
     private final CompileAction compileAction = new CompileAction(
-            "Compile", DesignerIconsFactory.getImageIcon(DesignerIconsFactory.COMPILE), "Compile model");
+            "Compile", DesignerIconsFactory.getImageIcon(DesignerIconsFactory.COMPILE), "Compile/Recompile model");
     private final RunAction runAction = new RunAction(
             "Run", DesignerIconsFactory.getImageIcon(DesignerIconsFactory.RUN), "Run model");
-    private final ClearOutputAction clearOutputAction = new ClearOutputAction("Clear");
+    private final ClearOutputAction clearOutputAction = new ClearOutputAction("Clear Text Area");
     private final CopyAllAction copyAllAction = new CopyAllAction("Copy All");
     /**
      * This status bar label will contain the name of the
@@ -128,20 +124,17 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      */
     private LabelStatusBarItem modelNameStatusItem;
     private JTextArea outputTxt;
+    
     private static final String DEFAILT_TRANS_URL = "redis://localhost";
 
     /**
      *
      * @param repository
-     * @param jurl
-     * @param rurl
-     * @param rport
-     * @param ruid
-     * @param rpsw
      */
-    public DesignerFrame(OctopusRepository repository, String jurl, String rurl, Integer rport, String ruid, String rpsw) {
-        super("K-Octopus");
+    public DesignerFrame(OctopusRepository repository) {
+        super("Octopus");
         this.repository = repository;
+//        this.outputTxt.addMouseListener(new popupTriggerListener());
 
         init();
     }
@@ -268,7 +261,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         outputTxt.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
+                if (SwingUtilities.isRightMouseButton(e)) {
                     popupMenu.show(outputTxt, e.getX(), e.getY());
                 }
             }
@@ -441,8 +434,6 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
         canvasPanel.setProcessingModel(currentProcessingModel);
         propertiesPanel.setProcessingModel(currentProcessingModel);
-
-        processingModelGraph = GraphUtils.compileGraph(currentProcessingModel, DEFAILT_TRANS_URL);
     }
 
     /**
@@ -456,18 +447,15 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
             LOG.debug("Saving docking layout");
             dockingManager.saveLayoutData();
         }
-
         DockableBarManager dockableBarManager = getDockableBarManager();
-
         if (dockableBarManager != null) {
             LOG.debug("Saving docking bar layout");
             dockableBarManager.saveLayoutData();
         }
-
         setVisible(false);
         dispose();
     }
-
+    
     private class OpenAction extends AbstractAction {
 
         private OpenAction(String text, ImageIcon icon, String description, int mnemonic) {
@@ -478,14 +466,18 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ProcessingModel modelToOpen = OpenModelDialog.openProcessingModel(DesignerFrame.this, repository);
+            Pair<String, Graph> pair = OpenModelGraphDialog.openModelGraphAsString(DesignerFrame.this, outputTxt);
+            if (pair == null) {
 
-            if (modelToOpen != null) {
-                LOG.debug("Opening processing model '{}'", modelToOpen.getName());
-
-                setCurrentProcessingModel(modelToOpen);
+            } else {
+                Graph graph = pair.getSecond();
                 
-                processingModelGraph = GraphUtils.compileGraph(modelToOpen, null);
+                ProcessingModel model = GraphUtils.buildProcessingModel(graph, pair.getFirst());
+                // We need to update all model IDs, otherwise this model may demage some Redis resource
+                // Model Graph may use different transportUrl, to run from designer we need to use 
+                // default transportUrl. 
+                processingModelGraph = GraphUtils.compileGraph(model, DEFAILT_TRANS_URL, true);
+                setCurrentProcessingModel(GraphUtils.buildProcessingModel(processingModelGraph, pair.getFirst()));
             }
         }
     }
@@ -501,7 +493,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         @Override
         public void actionPerformed(ActionEvent e) {
             // todo better way to come up with initial name
-            setCurrentProcessingModel(new ProcessingModel("model", "localhost:6379"));
+            setCurrentProcessingModel(new ProcessingModel("model", "redis://localhost"));
             processingModelGraph = null;
         }
     }
@@ -517,9 +509,10 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (currentProcessingModel != null) {
-                SaveModelDialog.saveProcessingModel(DesignerFrame.this, currentProcessingModel, repository);
-                // update the status bar with the updated name
+                SaveModelGraphDialog.saveModelGraph(DesignerFrame.this, processingModelGraph.toJson().toString(), outputTxt);
                 modelNameStatusItem.setText(currentProcessingModel.getName());
+            } else {
+                outputTxt.append("There is no model to save.\n\n");
             }
         }
     }
@@ -548,29 +541,12 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (currentProcessingModel != null) {
-                //                    compiler.compile(currentProcessingModel);                
-                outputTxt.append(currentProcessingModel.getName() + " compiled successfully.\n");
-               
                 processingModelGraph = GraphUtils.compileGraph(currentProcessingModel, null, true);
-                
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String json = gson.toJson(processingModelGraph.toJson());
+                outputTxt.append("Model compiled successfully.");
                 outputTxt.append("Model JSON:\n" + json + "\n\n");
             }
-        }
-
-        private ProcessingModel resetUuid(ProcessingModel model) {
-            model.setId(Generators.timeBasedGenerator().generate());
-            model.getExternalSinks().forEach(sink -> {
-                sink.setId(Generators.timeBasedGenerator().generate());
-            });
-            model.getExternalSources().forEach(source -> {
-                source.setId(Generators.timeBasedGenerator().generate());
-            });
-            model.getProcessors().forEach(proc -> {
-                proc.setId(Generators.timeBasedGenerator().generate());
-            });
-            return model;
         }
     }
 
@@ -586,28 +562,22 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
             if (currentProcessingModel != null) {
                 try {
                     TextAreaOutStreamAdaptor writer = new TextAreaOutStreamAdaptor(outputTxt);
-
                     PrintStream stream = new PrintStream(writer);
-                    
                     if (processingModelGraph == null) {
                         processingModelGraph = GraphUtils.compileGraph(currentProcessingModel, null);
                     }
-
                     String type = processingModelGraph.getType();
-
                     AbstractRunner runner = (AbstractRunner) Class.forName(type).newInstance();
                     runner.setStandardOut(stream);
                     runner.setStandardError(stream);
                     runner.setGraph(processingModelGraph);
                     runner.init();
                     runner.execute();
-
                     outputTxt.append("\nRunning model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n\n");
                     outputTxt.append("\n Model '" + currentProcessingModel.getName() + "' completed running.\n\n");
-
-                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                    String json = gson.toJson(processingModelGraph.toJson());
-                    outputTxt.append("Model Execution Graph: \n" + json + "\n\n");
+//                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//                    String json = gson.toJson(processingModelGraph.toJson());
+//                    outputTxt.append("Model Execution Graph: \n" + json + "\n\n");
                 } catch (InterruptedException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                     outputTxt.append("\n\n" + ex.getLocalizedMessage() + "\n");
                 }

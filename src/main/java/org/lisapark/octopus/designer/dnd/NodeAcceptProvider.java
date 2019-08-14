@@ -131,9 +131,7 @@ public class NodeAcceptProvider implements AcceptProvider {
                 LOG.warn("Could not find acceptable flavor {}", flavors);
             }
 
-        } catch (UnsupportedFlavorException e) {
-            LOG.error("Problem transferring object", e);
-        } catch (IOException e) {
+        } catch (UnsupportedFlavorException | IOException e) {
             LOG.error("Problem transferring object", e);
         }
     }
