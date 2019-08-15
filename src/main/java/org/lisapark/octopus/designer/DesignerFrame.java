@@ -134,8 +134,6 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
     public DesignerFrame(OctopusRepository repository) {
         super("Octopus");
         this.repository = repository;
-//        this.outputTxt.addMouseListener(new popupTriggerListener());
-
         init();
     }
 
@@ -460,8 +458,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
         private OpenAction(String text, ImageIcon icon, String description, int mnemonic) {
             super(text, icon);
-            putValue(SHORT_DESCRIPTION, description);
-            putValue(MNEMONIC_KEY, mnemonic);
+            super.putValue(SHORT_DESCRIPTION, description);
+            super.putValue(MNEMONIC_KEY, mnemonic);
         }
 
         @Override
@@ -486,8 +484,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
         private NewAction(String text, ImageIcon icon, String description, int mnemonic) {
             super(text, icon);
-            putValue(SHORT_DESCRIPTION, description);
-            putValue(MNEMONIC_KEY, mnemonic);
+            super.putValue(SHORT_DESCRIPTION, description);
+            super.putValue(MNEMONIC_KEY, mnemonic);
         }
 
         @Override
@@ -502,8 +500,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
         private SaveAction(String text, ImageIcon icon, String description, int mnemonic) {
             super(text, icon);
-            putValue(SHORT_DESCRIPTION, description);
-            putValue(MNEMONIC_KEY, mnemonic);
+            super.putValue(SHORT_DESCRIPTION, description);
+            super.putValue(MNEMONIC_KEY, mnemonic);
         }
 
         @Override
@@ -521,8 +519,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
         private ExitAction(String text, String description, int mnemonic) {
             super(text);
-            putValue(SHORT_DESCRIPTION, description);
-            putValue(MNEMONIC_KEY, mnemonic);
+            super.putValue(SHORT_DESCRIPTION, description);
+            super.putValue(MNEMONIC_KEY, mnemonic);
         }
 
         @Override
@@ -535,7 +533,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
         public CompileAction(String text, ImageIcon icon, String description) {
             super(text, icon);
-            putValue(SHORT_DESCRIPTION, description);
+            super.putValue(SHORT_DESCRIPTION, description);
         }
 
         @Override
@@ -554,7 +552,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
         private RunAction(String text, ImageIcon icon, String description) {
             super(text, icon);
-            putValue(SHORT_DESCRIPTION, description);
+            super.putValue(SHORT_DESCRIPTION, description);
         }
 
         @Override

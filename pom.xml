@@ -12,7 +12,7 @@ Contributors:
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    
     <groupId>octopus</groupId>
     <artifactId>octopus-designer</artifactId>
     <version>0.7</version>
@@ -65,7 +65,35 @@ Contributors:
         </repository> 
     </repositories>
 
-    <dependencies>
+    <dependencies>        
+         
+        <!-- Jide Stuff -->
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-action</artifactId>
+            <version>3.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-common</artifactId>
+            <version>3.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-components</artifactId>
+            <version>3.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-dock</artifactId>
+            <version>3.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-grids</artifactId>
+            <version>3.4.7</version>
+        </dependency>
+        
         <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
         <dependency>
             <groupId>org.apache.lucene</groupId>
@@ -123,11 +151,11 @@ Contributors:
             <version>2.0</version>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.6.2</version>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -160,34 +188,7 @@ Contributors:
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.17</version>
         </dependency>
-        
-        <!-- Jide Stuff -->
-        <dependency>
-            <groupId>com.jidesoft</groupId>
-            <artifactId>jide-action</artifactId>
-            <version>3.4.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jidesoft</groupId>
-            <artifactId>jide-common</artifactId>
-            <version>3.4.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jidesoft</groupId>
-            <artifactId>jide-components</artifactId>
-            <version>3.4.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jidesoft</groupId>
-            <artifactId>jide-dock</artifactId>
-            <version>3.4.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jidesoft</groupId>
-            <artifactId>jide-grids</artifactId>
-            <version>3.4.7</version>
-        </dependency>
-        
+       
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
@@ -231,16 +232,6 @@ Contributors:
         </dependency>
         <dependency>
             <groupId>k-octopus</groupId>
-            <artifactId>k-octopus-core</artifactId>
-            <version>0.7</version>
-        </dependency>
-        <dependency>
-            <groupId>k-octopus</groupId>
-            <artifactId>k-octopus-compute</artifactId>
-            <version>0.7</version>
-        </dependency>
-        <dependency>
-            <groupId>k-octopus</groupId>
             <artifactId>k-octopus-repo</artifactId>
             <version>0.7</version>
         </dependency>
@@ -257,7 +248,7 @@ Contributors:
                     <target>1.8</target>                    
                 </configuration>
             </plugin>
-            <!--plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.1</version>
@@ -280,9 +271,9 @@ Contributors:
                         </goals>
                     </execution>
                 </executions>
-            </plugin-->
+            </plugin>
             
-            <plugin>                
+            <!--plugin>                
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.1.0</version>
@@ -293,9 +284,21 @@ Contributors:
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>
-            
-            <plugin>
+            </plugin-->
+            <!--plugin>
+                <groupId>com.oracle.substratevm</groupId>
+                <artifactId>native-image-maven-plugin</artifactId>
+                <version>1.0.0-rc14</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>native-image</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin-->
+            <!--plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
@@ -311,7 +314,7 @@ Contributors:
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>           
+            </plugin-->           
         </plugins>
 
     </build>
