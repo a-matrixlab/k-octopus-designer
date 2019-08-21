@@ -93,27 +93,7 @@ Contributors:
             <artifactId>jide-grids</artifactId>
             <version>3.4.7</version>
         </dependency>
-        
-        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>8.2.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common -->
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-analyzers-common</artifactId>
-            <version>8.2.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser -->
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queryparser</artifactId>
-            <version>8.2.0</version>
-        </dependency>
-        <!-- End of Lucene -->
-        
+      
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-digester3</artifactId>
@@ -248,7 +228,7 @@ Contributors:
                     <target>1.8</target>                    
                 </configuration>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.1</version>
@@ -271,7 +251,7 @@ Contributors:
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
             
             <!--plugin>                
                 <groupId>org.apache.maven.plugins</groupId>

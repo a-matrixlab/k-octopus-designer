@@ -13,6 +13,7 @@ package org.lisapark.octopus.designer;
 import com.jidesoft.plaf.LookAndFeelFactory;
 import java.io.IOException;
 import javax.swing.*;
+import org.apache.commons.lang.SystemUtils;
 import org.lisapark.koctopus.core.OctopusRepository;
 import org.lisapark.koctopus.core.RepositoryException;
 import org.lisapark.koctopus.repo.RedisRepository;
@@ -30,8 +31,12 @@ public class DesignerApplication {
 
             OctopusRepository repository = new RedisRepository();
 
-            LookAndFeelFactory.installJideExtension(5);
-//      LookAndFeelFactory.installDefaultLookAndFeelAndExtension();
+            String os = SystemUtils.OS_NAME;
+            if (os.toLowerCase().startsWith("windows")) {
+                LookAndFeelFactory.installDefaultLookAndFeelAndExtension();
+            } else {
+                LookAndFeelFactory.installJideExtension(5);
+            }
 
             final DesignerFrame designerFrame = new DesignerFrame(repository);
             designerFrame.loadInitialDataFromRepository();

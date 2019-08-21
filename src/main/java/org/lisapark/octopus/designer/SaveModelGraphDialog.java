@@ -10,7 +10,7 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
 import javax.swing.filechooser.FileSystemView;
-import org.openide.util.Exceptions;
+import org.lisapark.koctopus.core.graph.Graph;
 
 /**
  *
@@ -18,19 +18,23 @@ import org.openide.util.Exceptions;
  */
 public class SaveModelGraphDialog {
 
-    public static void saveModelGraph(DesignerFrame parent, String content, JTextArea outputTxt) {
+    public static void saveModelGraph(DesignerFrame parent, Graph  graph, JTextArea outputTxt) {
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         jfc.setDialogTitle("Choose a directory and provide file name to save your file: ");
         jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        
+        String content = graph.toJson().toString();
 
         int returnValue = jfc.showSaveDialog(parent);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             try {
                 if (jfc.getSelectedFile().createNewFile()) {
                     Files.write(content.getBytes(), jfc.getSelectedFile());
+                    graph.setGraphJsonPath(jfc.getSelectedFile().getPath());
                     outputTxt.append("\n New File: " + jfc.getSelectedFile() + " -saved.\n");
                 } else if(jfc.getSelectedFile().isFile()){
                     Files.write(content.getBytes(), jfc.getSelectedFile());
+                    graph.setGraphJsonPath(jfc.getSelectedFile().getPath());
                     outputTxt.append("\n File: " + jfc.getSelectedFile() + " -updated.\n");
                 } else {
                     outputTxt.append("\n Please provide File name.\n");

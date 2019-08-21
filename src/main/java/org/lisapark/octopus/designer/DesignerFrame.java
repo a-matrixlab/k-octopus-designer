@@ -12,6 +12,8 @@ package org.lisapark.octopus.designer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.jidesoft.action.CommandBar;
 import com.jidesoft.action.DefaultDockableBarDockableHolder;
 import com.jidesoft.action.DockableBarManager;
@@ -54,12 +56,26 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+//import org.apache.lucene.document.Document;
+
 import org.lisapark.koctopus.core.graph.Graph;
 import org.lisapark.koctopus.core.graph.GraphUtils;
+import org.lisapark.koctopus.core.lucene.ModelLuceneIndex;
 import org.lisapark.koctopus.core.runtime.AbstractRunner;
 import org.lisapark.koctopus.util.Pair;
+import org.openide.util.Exceptions;
 
 /**
  * This is the main {@link JFrame} for the Octopus Designer application.
@@ -124,7 +140,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      */
     private LabelStatusBarItem modelNameStatusItem;
     private JTextArea outputTxt;
-    
+
     private static final String DEFAILT_TRANS_URL = "redis://localhost";
 
     /**
@@ -453,7 +469,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         setVisible(false);
         dispose();
     }
-    
+
     private class OpenAction extends AbstractAction {
 
         private OpenAction(String text, ImageIcon icon, String description, int mnemonic) {
@@ -469,7 +485,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
             } else {
                 Graph graph = pair.getSecond();
-                
+
                 ProcessingModel model = GraphUtils.buildProcessingModel(graph, pair.getFirst());
                 // We need to update all model IDs, otherwise this model may demage some Redis resource
                 // Model Graph may use different transportUrl, to run from designer we need to use 
@@ -507,8 +523,16 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (currentProcessingModel != null) {
-                SaveModelGraphDialog.saveModelGraph(DesignerFrame.this, processingModelGraph.toJson().toString(), outputTxt);
-                modelNameStatusItem.setText(currentProcessingModel.getName());
+                try {
+                    SaveModelGraphDialog.saveModelGraph(DesignerFrame.this, processingModelGraph, outputTxt);
+                    String luceneIndex = processingModelGraph.getLuceneIndex();
+                    currentProcessingModel.setModelJsonFile(processingModelGraph.getGraphJsonPath());
+                    // Add Graph json as a document to Lucene Index
+                    ModelLuceneIndex.indexModelWithDublinCore(currentProcessingModel, processingModelGraph, luceneIndex, false);
+                    modelNameStatusItem.setText(currentProcessingModel.getName());
+                } catch (Exception ex) {
+                    outputTxt.append("\n\nERROR indexing file: " + ex.getMessage());
+                }
             } else {
                 outputTxt.append("There is no model to save.\n\n");
             }
@@ -539,7 +563,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (currentProcessingModel != null) {
-                processingModelGraph = GraphUtils.compileGraph(currentProcessingModel, null, true);
+                processingModelGraph = GraphUtils.compileGraph(currentProcessingModel, currentProcessingModel.getTransportUrl(), true);
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String json = gson.toJson(processingModelGraph.toJson());
                 outputTxt.append("Model compiled successfully.");
@@ -555,8 +579,21 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
             super.putValue(SHORT_DESCRIPTION, description);
         }
 
+        private boolean validateUrl(String url) {
+            try {
+                URL _url = new URL(url);
+                return true;
+            } catch (MalformedURLException ex) {
+                outputTxt.append("\n----------------------------------------\n");
+                outputTxt.append("ERROR: " + url + "\n");
+                outputTxt.append(ex.getMessage());
+                return false;
+            }
+        }
+
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e
+        ) {
             if (currentProcessingModel != null) {
                 try {
                     TextAreaOutStreamAdaptor writer = new TextAreaOutStreamAdaptor(outputTxt);
@@ -565,17 +602,56 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                         processingModelGraph = GraphUtils.compileGraph(currentProcessingModel, null);
                     }
                     String type = processingModelGraph.getType();
-                    AbstractRunner runner = (AbstractRunner) Class.forName(type).newInstance();
-                    runner.setStandardOut(stream);
-                    runner.setStandardError(stream);
-                    runner.setGraph(processingModelGraph);
-                    runner.init();
-                    runner.execute();
-                    outputTxt.append("\nRunning model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n\n");
-                    outputTxt.append("\n Model '" + currentProcessingModel.getName() + "' completed running.\n\n");
-//                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//                    String json = gson.toJson(processingModelGraph.toJson());
-//                    outputTxt.append("Model Execution Graph: \n" + json + "\n\n");
+                    String serviceUrl = processingModelGraph.getSearviceUrl();
+                    if (serviceUrl == null || serviceUrl.isEmpty()) {
+                        // Run model locally using local Octopus repository
+                        AbstractRunner runner = (AbstractRunner) Class.forName(type).newInstance();
+                        outputTxt.append("\nRunning model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n\n");
+                        runner.setStandardOut(stream);
+                        runner.setStandardError(stream);
+                        runner.setGraph(processingModelGraph);
+                        runner.init();
+                        runner.execute();
+                        outputTxt.append("\n Model '" + currentProcessingModel.getName() + "' completed running.\n\n");
+                    } else if (validateUrl(serviceUrl)) {
+                        // Run model on remote server
+                        outputTxt.append("\n\nRunning model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n\n");
+                        CloseableHttpClient httpclient = HttpClients.createDefault();
+                        try {
+                            HttpPost httppost = new HttpPost(processingModelGraph.getSearviceUrl());
+                            StringEntity reqEntity = new StringEntity(processingModelGraph.toJson().toString());
+                            httppost.setEntity(reqEntity);
+
+                            outputTxt.append("Executing request: " + httppost.getRequestLine() + "\n");
+                            try (CloseableHttpResponse response = httpclient.execute(httppost)) {
+                                outputTxt.append("\n----------------------------------------\n");
+                                outputTxt.append(response.getStatusLine().getReasonPhrase() + "\n\n");
+
+                                String entity = EntityUtils.toString(response.getEntity());
+                                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                                JsonParser jparser = new JsonParser();
+                                JsonElement jelem = jparser.parse(entity);
+                                String json = gson.toJson(jelem);
+                                outputTxt.append(json);
+                            }
+                        } catch (IOException ex) {
+                            Exceptions.printStackTrace(ex);
+                            outputTxt.append("\n----------------------------------------");
+                            outputTxt.append("\nError processing Request: " + ex.getMessage());
+                            outputTxt.append("\nInvalid URL:\n");
+                            outputTxt.append(serviceUrl);
+                        } finally {
+                            try {
+                                httpclient.close();
+                            } catch (IOException ex) {
+                                Exceptions.printStackTrace(ex);
+                            }
+                        }
+                    } else {
+                        outputTxt.append("\n----------------------------------------");
+                        outputTxt.append("\nInvalid URL:\n");
+                        outputTxt.append(serviceUrl);
+                    }
                 } catch (InterruptedException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                     outputTxt.append("\n\n" + ex.getLocalizedMessage() + "\n");
                 }
