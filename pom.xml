@@ -228,7 +228,7 @@ Contributors:
                     <target>1.8</target>                    
                 </configuration>
             </plugin>
-            <!--plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.1</version>
@@ -251,7 +251,7 @@ Contributors:
                         </goals>
                     </execution>
                 </executions>
-            </plugin-->
+            </plugin>
             
             <!--plugin>                
                 <groupId>org.apache.maven.plugins</groupId>
