@@ -194,11 +194,11 @@ Contributors:
             <version>2.2.2</version>
             <type>jar</type>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>com.googlecode.sardine</groupId>
             <artifactId>sardine</artifactId>
             <version>314</version>
-        </dependency>
+        </dependency-->
       
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
