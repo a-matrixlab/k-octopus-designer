@@ -602,7 +602,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                         processingModelGraph = GraphUtils.compileGraph(currentProcessingModel, null);
                     }
                     String type = processingModelGraph.getType();
-                    String serviceUrl = processingModelGraph.getSearviceUrl();
+                    String serviceUrl = processingModelGraph.getServiceUrl();
                     if (serviceUrl == null || serviceUrl.isEmpty()) {
                         // Run model locally using local Octopus repository
                         AbstractRunner runner = (AbstractRunner) Class.forName(type).newInstance();
@@ -618,7 +618,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                         outputTxt.append("\n\nRunning model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n\n");
                         CloseableHttpClient httpclient = HttpClients.createDefault();
                         try {
-                            HttpPost httppost = new HttpPost(processingModelGraph.getSearviceUrl());
+                            HttpPost httppost = new HttpPost(processingModelGraph.getServiceUrl());
                             StringEntity reqEntity = new StringEntity(processingModelGraph.toJson().toString());
                             httppost.setEntity(reqEntity);
 
