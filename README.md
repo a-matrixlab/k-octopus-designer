@@ -52,9 +52,30 @@ https://www.dropbox.com/preview/Octopus-Designer/octopus-designer-0.7.1-jar-with
 
 ## Running K-Octopus Designer
 
+The main purpose of K-Octopus Designer is to build Processing Model Execution Graph. Graph representation is a Json file and you can run it even from Postman.
+
+We would recommend to start from installation on single laptop. After you run Designer, go to File menu and select "Open..." option. You'll get dialog box that you can use to navigate to 
+
+> k-octopus-designer/src/main/resources/model_json_files/SMAmodel_local.json
+
+When you'll open it you'll get following layout.
+
 ![K-Octopus Designer](https://github.com/a-matrixlab/k-octopus-designer/blob/master/Screenshot%20from%202019-08-25%2015-01-44.png)
 
-The main purpose of K-Octopus Designer is to build Processing Model Execution Graph. Graph representation isa Json file that you can use even from Postman.
+There are three very important parameters that define Execution environment:
+1. Transport Url - this is Redis Url. In our case we are using local standalone Redis;
+2. Service Url - this is Url where we are running k-octopus-compute. If this parameter is blank, Designer will use embedded compute engine;
+3. Model Lucene Index - when you are saving Processing model Graph, you are putting it into Lucene index for future search and analysis.
+
+You should compile created graph by clicking forth from the left icon. The generated Graph Json will appear in the Output window.
+
+So, you can grab this Json and run it from Postman.
+
+Before doing this, please run k-octopus-compute from "octopus/k-octopus-compute/target" directory:
+
+> $ java -jar k-octopus-compute-0.7.1-jar-with-dependencies.jar
+
+![K-Octopus Designer](https://github.com/a-matrixlab/k-octopus-designer/blob/master/Screenshot%20from%202019-08-25%2017-15-49.png)
 
 
- 
+
