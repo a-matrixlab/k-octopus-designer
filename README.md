@@ -1,6 +1,6 @@
 # K-Octopus Designer 
 ## Common info and requirements
-Octopus platform is built on set of processors. Processors can be organized in the Model to perform processing workflow. There are four distinguish types of processors:
+Octopus platform is built on a set of processors. Processors can be organized in the Model to perform processing workflow. There are four distinguish types of processors:
 1. **Source processors**, that allow Octopus model to connect to multiple data source, that can include Relational Databases, NoSQL databases, distributed data storage like Hadoop, File systems, Streaming data, media file and so on;
 2. **Data transformation processors**. This kind of processors perform actual data processing. They can do this by themselves or by delegating data processing to the external general purpose computational engines like Spark, Flink, Hadoop and so on;
 3. **Sink processors**. This kind of processors support output of processed data. In some respect Sink processors are mirroring the Source processors and basically should be able to output data into all supported by Source processors data storage's and feeds;
@@ -53,5 +53,8 @@ https://www.dropbox.com/preview/Octopus-Designer/octopus-designer-0.7.1-jar-with
 ## Running K-Octopus Designer
 
 ![K-Octopus Designer](https://github.com/a-matrixlab/k-octopus-designer/blob/master/Screenshot%20from%202019-08-25%2015-01-44.png)
+
+The main purpose of K-Octopus Designer is to build Processing Model Execution Graph. Graph representation isa Json file that you can use even from Postman.
+
 
  
