@@ -80,7 +80,7 @@ Before doing this, please run k-octopus-compute from "octopus/k-octopus-compute/
 
 ## Steps to build new Model
 
-The following is a step by step instructions how to build and to run a simplest Octopus model. Before staeting click on right left icon on the Control Bar (looks like a paper list). It will create new canvas for new Model.
+The following is a step by step instructions how to build and to run a simplest Octopus model. Before starting click on right left icon on the Control Bar (looks like a paper list). It will create new canvas for new Model.
 
 **Step 1.** Go to the Octopus palette panel and select "Sources" tab. In the "Sources" tab choose "Test Data Source for Redis" source processor and drag it to the canvas.
 
