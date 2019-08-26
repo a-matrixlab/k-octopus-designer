@@ -63,10 +63,10 @@ When you'll open it you'll get following layout.
 
 ![K-Octopus Designer](https://github.com/a-matrixlab/k-octopus-designer/blob/master/Screenshot%20from%202019-08-25%2015-01-44.png)
 
-There are three very important parameters that define Execution environment:
-1. Transport Url - this is Redis Url. In our case we are using local standalone Redis;
-2. Service Url - this is Url where we are running k-octopus-compute. If this parameter is blank, Designer will use embedded compute engine;
-3. Model Lucene Index - when you are saving Processing model Graph, you are putting it into Lucene index for future search and analysis.
+There are three very important **properties** (parameters) that define Execution environment:
+1. **Transport Url** - this is Redis Url. In our case we are using local standalone Redis;
+2. **Service Url** - this is Url where we are running k-octopus-compute. If this parameter is blank, Designer will use embedded compute engine;
+3. **Model Lucene Index** - when you are saving Processing model Graph, you are putting it into Lucene index for future search and analysis.
 
 You should compile created graph by clicking forth from the left icon. The generated Graph Json will appear in the Output window.
 
