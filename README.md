@@ -16,10 +16,10 @@ There are two major types of such protocols:
 Processors are not communicating directly to each other, instead they are using intermediate transport, that supports moving data from one processor to another. In this demo we are using Redis streams as a way to move data from one processor to another. So, the Redis standalone v.5+ should be part of demo installation.
 
 There are four K-Octopus projects/modules that are ready for demo so far (the other ones are in progress):
-1. K-Octopus Core;
-2. K-Octopus Compute - this module responsible for executing processing models;
-3. K-Octopus Repo - is placeholder for the Octopus repository. Right now it does almost nothing, just holding list of processor instances to serve K-Octopus Designer Palettes;
-4. K-Octopus Designer is a graphical, drag-and-drop tool to visually build an Octopus Model Execution Graph.
+1. **K-Octopus Core**;
+2. **K-Octopus Compute** - this module responsible for executing processing models;
+3. **K-Octopus Repo** - is placeholder for the Octopus repository. Right now it does almost nothing, just holding list of processor instances to serve K-Octopus Designer Palettes;
+4. **K-Octopus Designer** is a graphical, drag-and-drop tool to visually build an Octopus Model Execution Graph.
 
 There are direct inter-dependencies between these project in the order from 1 to 4. So, building of those projects should follow the same order, starting from K-Octopus Core and ending with K-Octopus Designer. 
 
@@ -27,9 +27,9 @@ All projects require Java 8. This limitation is due to commercial software that 
 
 ## K-Octopus Designer installation
 1. Be sure that all three projects:
-  * K-Octopus Core;
-  * K-Octopus Compute;
-  * K-Octopus Repo -
+  * **K-Octopus Core**;
+  * **K-Octopus Compute**;
+  * **K-Octopus Repo** -
 
 are installed already.
 
