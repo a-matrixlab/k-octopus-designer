@@ -78,5 +78,28 @@ Before doing this, please run k-octopus-compute from "octopus/k-octopus-compute/
 
 ![K-Octopus Designer](https://github.com/a-matrixlab/k-octopus-designer/blob/master/Screenshot%20from%202019-08-25%2017-15-49.png)
 
+## Steps to build new Model
 
+The following is a step by step instructions how to build and to run a simplest Octopus model. Before starting click on right left icon on the Control Bar (looks like a paper list). It will create new canvas for new Model.
+
+**Step 1.** Go to the Octopus palette panel and select "Sources" tab. In the "Sources" tab choose "Test Data Source for Redis" source processor and drag it to the canvas.
+
+**Step 2.** Select "Sinks" tab in the Palette panel and then "Console for Redis" sink processor on it. Drag and drop it on the canvas. Now you have two processors on the canvas and you can connect them.
+
+**Step 3.** Each processor can have inputs and a single output. Source processors have only a single output, sink processors can have multiple inputs, the other processors can have multiple inputs and a single output each. All processors can have an unlimited list of parameters that can be used to specify inputs and an output for each processor. **To connect processors the output of one processor should be connected to the input of the other processor. In our case we have only two processors, so we are going to connect output of "Test Data source for Redis" processor to the input of "Console" sink processor. Hold Ctrl button and drag mouse from output of "Test Data source for Redis" to the input of "Console for Redis" sink.**
+
+**Step 4.** Now when we've connected our processors we may want to specify parameters for each of them. Lets start with source processor. "Test Data source" is very simple source processor and it has only one parameter "Number of events" with default value equal 10. We can leave it as is or change it.
+
+**Step 5.** Just to remind you, Octopus source processors provide data for the model in a form of events. The event definition is the same as an event in Complex Even Processing (CEP) - a collection of "name-value" pairs witch we call attributes. Source processor supplies events to the model one by one when they are getting available. We have to define each attribute of an event by providing attribute name and attribute value type. 
+Click on attribute text box and you'll get an access to the dialog window that Octopus Designer offers to help you to do this work. 
+
+**Step 6.** Next lets move to the sink processor and specify parameters for the "Console for Redis" sink processor. In the "Show Attributes" parameter we should provide the attribute name that we are going to show in output window (Console window) of Octopus Designer.
+
+**Step 7.** Now we can compile model (icon 4 on Control Bar). During compilation Octopus Designer generates a detailed description of the model in JSON format. You can see the result of compilation in Output window of designer.
+
+**Step 8.** Finally we can run model by pushing green dot icon - the most right icon on the Octopus designer  top tool bar. The results of model execution will be in Output window.
+
+**Step 9.** You can save model in your local file system. The "Save" operation performs two actions
+1. It saves JSON file;
+2. It adds this JSON file to Lucene Index for future use in search and analysis.
 
