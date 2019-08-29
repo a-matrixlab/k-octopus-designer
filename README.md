@@ -103,3 +103,5 @@ Click on attribute text box and you'll get an access to the dialog window that O
 1. It saves JSON file;
 2. It adds this JSON file to Lucene Index for future use in search and analysis.
 
+Reference to the site image: https://cdn.pixabay.com/photo/2016/08/31/13/56/fish-1633525__340.jpg
+
