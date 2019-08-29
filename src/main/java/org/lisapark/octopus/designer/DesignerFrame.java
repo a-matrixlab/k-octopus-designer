@@ -12,8 +12,6 @@ package org.lisapark.octopus.designer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.jidesoft.action.CommandBar;
 import com.jidesoft.action.DefaultDockableBarDockableHolder;
 import com.jidesoft.action.DockableBarManager;
@@ -56,26 +54,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
 //import org.apache.lucene.document.Document;
-
 import org.lisapark.koctopus.core.graph.Graph;
 import org.lisapark.koctopus.core.graph.GraphUtils;
 import org.lisapark.koctopus.core.lucene.ModelLuceneIndex;
 import org.lisapark.koctopus.core.runtime.AbstractRunner;
+import org.lisapark.koctopus.core.runtime.RuntimeUtils;
 import org.lisapark.koctopus.util.Pair;
-import org.openide.util.Exceptions;
 
 /**
  * This is the main {@link JFrame} for the Octopus Designer application.
@@ -616,37 +606,12 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                     } else if (validateUrl(serviceUrl)) {
                         // Run model on remote server
                         outputTxt.append("\n\nRunning model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n\n");
-                        CloseableHttpClient httpclient = HttpClients.createDefault();
-                        try {
-                            HttpPost httppost = new HttpPost(processingModelGraph.getServiceUrl());
-                            StringEntity reqEntity = new StringEntity(processingModelGraph.toJson().toString());
-                            httppost.setEntity(reqEntity);
-
-                            outputTxt.append("Executing request: " + httppost.getRequestLine() + "\n");
-                            try (CloseableHttpResponse response = httpclient.execute(httppost)) {
-                                outputTxt.append("\n----------------------------------------\n");
-                                outputTxt.append(response.getStatusLine().getReasonPhrase() + "\n\n");
-
-                                String entity = EntityUtils.toString(response.getEntity());
-                                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                                JsonParser jparser = new JsonParser();
-                                JsonElement jelem = jparser.parse(entity);
-                                String json = gson.toJson(jelem);
-                                outputTxt.append(json);
-                            }
-                        } catch (IOException ex) {
-                            Exceptions.printStackTrace(ex);
-                            outputTxt.append("\n----------------------------------------");
-                            outputTxt.append("\nError processing Request: " + ex.getMessage());
-                            outputTxt.append("\nInvalid URL:\n");
-                            outputTxt.append(serviceUrl);
-                        } finally {
-                            try {
-                                httpclient.close();
-                            } catch (IOException ex) {
-                                Exceptions.printStackTrace(ex);
-                            }
-                        }
+                        String graph = processingModelGraph.toJson().toString();
+                        List<String> output = RuntimeUtils.runRemoteModel(serviceUrl, graph);
+                        // report remote processing to the output window
+                        output.forEach((item) -> {
+                            outputTxt.append(item);
+                        });
                     } else {
                         outputTxt.append("\n----------------------------------------");
                         outputTxt.append("\nInvalid URL:\n");
