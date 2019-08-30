@@ -22,7 +22,7 @@ import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.processor.ProcessorInput;
 import org.lisapark.koctopus.core.processor.ProcessorJoin;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
-import org.lisapark.koctopus.core.source.external.ExternalSource;
+import org.lisapark.koctopus.core.source.external.AbstractExternalSource;
 import org.lisapark.octopus.designer.properties.support.EventTypeCellEditor;
 import org.lisapark.octopus.swing.BasePropertyTable;
 import org.lisapark.octopus.swing.ComponentFactory;
@@ -94,7 +94,7 @@ public class PropertiesPanel extends JPanel {
         }
     }
 
-    public void setSelectedExternalSource(ExternalSource externalSource) {
+    public void setSelectedExternalSource(AbstractExternalSource externalSource) {
         if (isChangeOfSelection(externalSource)) {
             selectedNode = externalSource;
 
@@ -176,7 +176,7 @@ public class PropertiesPanel extends JPanel {
             setProperties(newProperties);
         }
 
-        private void loadPropertiesForExternalSource(ExternalSource externalSource) {
+        private void loadPropertiesForExternalSource(AbstractExternalSource externalSource) {
             java.util.List<BaseProperty> newProperties = Lists.newArrayList();
 
             if (externalSource != null) {

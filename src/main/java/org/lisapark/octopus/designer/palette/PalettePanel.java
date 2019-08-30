@@ -15,7 +15,7 @@ import com.jidesoft.swing.JideTabbedPane;
 import org.lisapark.koctopus.core.Node;
 import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
-import org.lisapark.koctopus.core.source.external.ExternalSource;
+import org.lisapark.koctopus.core.source.external.AbstractExternalSource;
 import org.lisapark.octopus.designer.DesignerIconsFactory;
 import org.lisapark.octopus.designer.dnd.ExternalSinkTransferable;
 import org.lisapark.octopus.designer.dnd.ExternalSourceTransferable;
@@ -37,7 +37,7 @@ public class PalettePanel extends JPanel {
 
     private NodeListModel<AbstractProcessor> processorListModel;
     private NodeListModel<ExternalSink> externalSinkListModel;
-    private NodeListModel<ExternalSource> externalSourceListModel;
+    private NodeListModel<AbstractExternalSource> externalSourceListModel;
 
     private final NodeListCellRenderer cellRenderer = new NodeListCellRenderer();
     private JList externalSinkList;
@@ -122,7 +122,7 @@ public class PalettePanel extends JPanel {
 
             @Override
             protected Transferable createTransferable(JComponent c) {
-                ExternalSource externalSource = (ExternalSource) externalSourceList.getSelectedValue();
+                AbstractExternalSource externalSource = (AbstractExternalSource) externalSourceList.getSelectedValue();
 
                 return new ExternalSourceTransferable(externalSource);
             }
@@ -175,7 +175,7 @@ public class PalettePanel extends JPanel {
         processorListModel.setData(processors);
     }
 
-    public void setExternalSources(java.util.List<ExternalSource> externalSources) {
+    public void setExternalSources(java.util.List<AbstractExternalSource> externalSources) {
         externalSourceListModel.setData(externalSources);
     }
 

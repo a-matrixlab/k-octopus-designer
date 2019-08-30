@@ -18,7 +18,7 @@ import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.sink.Sink;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
 import org.lisapark.koctopus.core.source.Source;
-import org.lisapark.koctopus.core.source.external.ExternalSource;
+import org.lisapark.koctopus.core.source.external.AbstractExternalSource;
 import org.lisapark.octopus.designer.canvas.actions.RemoveConnectionAction;
 import org.lisapark.octopus.designer.canvas.actions.RemoveExternalSinkAction;
 import org.lisapark.octopus.designer.canvas.actions.RemoveExternalSourceAction;
@@ -100,8 +100,8 @@ public class ProcessingScene extends GraphPinScene<Node, Connection, Pin> {
     }
 
     private void initializeFromModel(ProcessingModel model) {
-        Set<ExternalSource> externalSources = model.getExternalSources();
-        for (ExternalSource externalSource : externalSources) {
+        Set<AbstractExternalSource> externalSources = model.getExternalSources();
+        for (AbstractExternalSource externalSource : externalSources) {
             addExternalSource(externalSource);
         }
 
@@ -196,7 +196,7 @@ public class ProcessingScene extends GraphPinScene<Node, Connection, Pin> {
         return outputPin;
     }
 
-    public void addExternalSource(ExternalSource source) {
+    public void addExternalSource(AbstractExternalSource source) {
         // make sure we have never seen this source before
         if (findStoredObject(source) == null) {
             model.addExternalEventSource(source);
@@ -213,7 +213,7 @@ public class ProcessingScene extends GraphPinScene<Node, Connection, Pin> {
         }
     }
 
-    public void removeExternalSource(ExternalSource externalSource) {
+    public void removeExternalSource(AbstractExternalSource externalSource) {
         // make sure it is a valid source
         if (findStoredObject(externalSource) != null) {
             model.removeExternalEventSource(externalSource);

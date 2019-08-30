@@ -29,7 +29,7 @@ import org.lisapark.koctopus.core.Node;
 import org.lisapark.koctopus.core.ProcessingModel;
 import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
-import org.lisapark.koctopus.core.source.external.ExternalSource;
+import org.lisapark.koctopus.core.source.external.AbstractExternalSource;
 import org.lisapark.octopus.designer.canvas.CanvasPanel;
 import org.lisapark.octopus.designer.canvas.NodeSelectionListener;
 import org.lisapark.octopus.designer.palette.PalettePanel;
@@ -54,6 +54,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -66,6 +67,7 @@ import org.lisapark.koctopus.core.lucene.ModelLuceneIndex;
 import org.lisapark.koctopus.core.runtime.AbstractRunner;
 import org.lisapark.koctopus.core.runtime.RuntimeUtils;
 import org.lisapark.koctopus.util.Pair;
+import org.openide.util.Exceptions;
 
 /**
  * This is the main {@link JFrame} for the Octopus Designer application.
@@ -229,8 +231,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
             if (node instanceof AbstractProcessor) {
                 propertiesPanel.setSelectedProcessor((AbstractProcessor) node);
 
-            } else if (node instanceof ExternalSource) {
-                propertiesPanel.setSelectedExternalSource((ExternalSource) node);
+            } else if (node instanceof AbstractExternalSource) {
+                propertiesPanel.setSelectedExternalSource((AbstractExternalSource) node);
 
             } else if (node instanceof ExternalSink) {
                 propertiesPanel.setSelectedExternalSink((ExternalSink) node);
@@ -418,14 +420,14 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
     /**
      * This method will load all the initial data from the {@link #repository}.
      * This includes all the template {@link AbstractProcessor}s,
-     * {@link ExternalSource}s and {@link ExternalSink}s. The method will then
+     * {@link AbstractExternalSource}s and {@link ExternalSink}s. The method will then
      * give this data to the appropriate views.
      */
     void loadInitialDataFromRepository() throws RepositoryException {
         List<ExternalSink> sinkTemplates = repository.getAllExternalSinkTemplates();
         palettePanel.setExternalSinks(sinkTemplates);
 
-        List<ExternalSource> sourceTemplates = repository.getAllExternalSourceTemplates();
+        List<AbstractExternalSource> sourceTemplates = repository.getAllExternalSourceTemplates();
         palettePanel.setExternalSources(sourceTemplates);
 
         List<AbstractProcessor> processorTemplates = repository.getAllProcessorTemplates();
@@ -619,6 +621,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                     }
                 } catch (InterruptedException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                     outputTxt.append("\n\n" + ex.getLocalizedMessage() + "\n");
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
                 }
             }
         }

@@ -10,7 +10,7 @@
  */
 package org.lisapark.octopus.designer.dnd;
 
-import org.lisapark.koctopus.core.source.external.ExternalSource;
+import org.lisapark.koctopus.core.source.external.AbstractExternalSource;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -20,21 +20,21 @@ import java.io.IOException;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * This {@link Transferable} is used to move {@link ExternalSource}s between components for drag and drop
+ * This {@link Transferable} is used to move {@link AbstractExternalSource}s between components for drag and drop
  * operations.
  *
  * @author dave sinclair(david.sinclair@lisa-park.com)
  * @see java.awt.datatransfer.Transferable
  */
 public class ExternalSourceTransferable implements Transferable {
-    public static final DataFlavor FLAVOR = new DataFlavor(ExternalSource.class, "External Source");
+    public static final DataFlavor FLAVOR = new DataFlavor(AbstractExternalSource.class, "External Source");
 
     /**
      * Source we are transferring
      */
-    private final ExternalSource externalSource;
+    private final AbstractExternalSource externalSource;
 
-    public ExternalSourceTransferable(ExternalSource externalSource) {
+    public ExternalSourceTransferable(AbstractExternalSource externalSource) {
         checkArgument(externalSource != null, "externalSource cannot be null");
         this.externalSource = externalSource;
     }

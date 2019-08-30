@@ -22,7 +22,7 @@ import org.lisapark.koctopus.core.ProcessingModel;
 import org.lisapark.koctopus.core.ValidationException;
 import org.lisapark.koctopus.core.event.Attribute;
 import org.lisapark.koctopus.core.event.EventType;
-import org.lisapark.koctopus.core.source.external.ExternalSource;
+import org.lisapark.koctopus.core.source.external.AbstractExternalSource;
 import org.lisapark.octopus.designer.DesignerIconsFactory;
 import org.lisapark.octopus.swing.BaseTable;
 import org.lisapark.octopus.swing.Borders;
@@ -79,9 +79,9 @@ public class EventTypeDialog extends StandardDialog {
     private Map<Attribute, Attribute> originalAttributes;
 
     private ProcessingModel processingModel;
-    private ExternalSource externalSource;
+    private AbstractExternalSource externalSource;
 
-    private EventTypeDialog(Frame frame, EventType eventType, ExternalSource externalSource, ProcessingModel processingModel) {
+    private EventTypeDialog(Frame frame, EventType eventType, AbstractExternalSource externalSource, ProcessingModel processingModel) {
         super(frame);
         this.eventType = eventType;
         // get copies of the original attributes
@@ -396,7 +396,7 @@ public class EventTypeDialog extends StandardDialog {
         }
     }
 
-    public static EventType editEventType(Component parent, EventType eventType, ExternalSource externalSource,
+    public static EventType editEventType(Component parent, EventType eventType, AbstractExternalSource externalSource,
                                           ProcessingModel processingModel) {
         JFrame frame = (JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, parent);
         EventTypeDialog dialog = new EventTypeDialog(frame, eventType, externalSource, processingModel);

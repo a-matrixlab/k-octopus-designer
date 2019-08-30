@@ -10,7 +10,7 @@
  */
 package org.lisapark.octopus.designer.canvas.actions;
 
-import org.lisapark.koctopus.core.source.external.ExternalSource;
+import org.lisapark.koctopus.core.source.external.AbstractExternalSource;
 import org.lisapark.octopus.designer.canvas.ProcessingScene;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.widget.Widget;
@@ -19,7 +19,7 @@ import java.awt.event.KeyEvent;
 
 /**
  * This action responds to the user pressing the {@link KeyEvent#VK_DELETE} while a {@link Widget} is selected
- * in the scene. It will verify that the object for the widget is a {@link ExternalSource} then call the
+ * in the scene. It will verify that the object for the widget is a {@link AbstractExternalSource} then call the
  * {@link ProcessingScene#removeExternalSource(org.lisapark.octopus.core.source.external.ExternalSource)} method.
  *
  * @author dave sinclair(david.sinclair@lisa-park.com)
@@ -36,8 +36,8 @@ public class RemoveExternalSourceAction extends WidgetAction.Adapter {
         if (event.getKeyChar() == KeyEvent.VK_DELETE) {
             Object object = processingScene.findObject(widget);
 
-            if (object != null && object instanceof ExternalSource) {
-                ExternalSource externalSource = (ExternalSource) object;
+            if (object != null && object instanceof AbstractExternalSource) {
+                AbstractExternalSource externalSource = (AbstractExternalSource) object;
 
                 processingScene.removeExternalSource(externalSource);
                 return State.CONSUMED;

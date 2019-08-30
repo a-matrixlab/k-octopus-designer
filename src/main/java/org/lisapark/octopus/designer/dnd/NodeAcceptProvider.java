@@ -12,7 +12,7 @@ package org.lisapark.octopus.designer.dnd;
 
 import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
-import org.lisapark.koctopus.core.source.external.ExternalSource;
+import org.lisapark.koctopus.core.source.external.AbstractExternalSource;
 import org.lisapark.octopus.designer.canvas.ProcessingScene;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ConnectorState;
@@ -114,7 +114,7 @@ public class NodeAcceptProvider implements AcceptProvider {
                     scene.addProcessor(processor);
 
                 } else if (acceptableFlavor == ExternalSourceTransferable.FLAVOR) {
-                    ExternalSource externalSource = (ExternalSource) transferable.getTransferData(ExternalSourceTransferable.FLAVOR);
+                    AbstractExternalSource externalSource = (AbstractExternalSource) transferable.getTransferData(ExternalSourceTransferable.FLAVOR);
                     externalSource.setLocation(point);
 
                     LOG.debug("Dropping external source {} at location {}", externalSource, point);

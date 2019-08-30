@@ -12,7 +12,7 @@ package org.lisapark.octopus.designer;
 
 import org.lisapark.koctopus.core.processor.AbstractProcessor;
 import org.lisapark.koctopus.core.sink.external.ExternalSink;
-import org.lisapark.koctopus.core.source.external.ExternalSource;
+import org.lisapark.koctopus.core.source.external.AbstractExternalSource;
 import org.lisapark.octopus.designer.properties.PropertiesPanel;
 import org.netbeans.api.visual.model.ObjectSceneEvent;
 import org.netbeans.api.visual.model.ObjectSceneListener;
@@ -60,8 +60,8 @@ public class ProcessingSceneListener implements ObjectSceneListener {
             if (selectedObject instanceof AbstractProcessor) {
                 propertiesPanel.setSelectedProcessor((AbstractProcessor) selectedObject);
 
-            } else if (selectedObject instanceof ExternalSource) {
-                propertiesPanel.setSelectedExternalSource((ExternalSource) selectedObject);
+            } else if (selectedObject instanceof AbstractExternalSource) {
+                propertiesPanel.setSelectedExternalSource((AbstractExternalSource) selectedObject);
 
             } else if (selectedObject instanceof ExternalSink) {
                 propertiesPanel.setSelectedExternalSink((ExternalSink) selectedObject);

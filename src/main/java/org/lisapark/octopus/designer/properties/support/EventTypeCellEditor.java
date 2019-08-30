@@ -13,7 +13,7 @@ package org.lisapark.octopus.designer.properties.support;
 import com.jidesoft.grid.ContextSensitiveCellEditor;
 import org.lisapark.koctopus.core.ProcessingModel;
 import org.lisapark.koctopus.core.event.EventType;
-import org.lisapark.koctopus.core.source.external.ExternalSource;
+import org.lisapark.koctopus.core.source.external.AbstractExternalSource;
 import org.lisapark.octopus.designer.event.EventTypeDialog;
 import org.lisapark.octopus.swing.ComponentFactory;
 
@@ -30,7 +30,7 @@ public class EventTypeCellEditor extends ContextSensitiveCellEditor implements A
     private JButton button;
     private EventType eventType;
     private ProcessingModel processingModel;
-    private ExternalSource externalSource;
+    private AbstractExternalSource externalSource;
 
     public EventTypeCellEditor() {
         this.button = ComponentFactory.createButton();
@@ -68,7 +68,7 @@ public class EventTypeCellEditor extends ContextSensitiveCellEditor implements A
         this.processingModel = processingModel;
     }
 
-    public void setExternalSource(ExternalSource externalSource) {
+    public void setExternalSource(AbstractExternalSource externalSource) {
         this.externalSource = externalSource;
     }
 }
