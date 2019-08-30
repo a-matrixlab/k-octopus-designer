@@ -156,11 +156,11 @@ Contributors:
             <scope>test</scope>
         </dependency>
         
-        <dependency>
+        <!--dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.17</version>
-        </dependency>
+        </dependency-->
        
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -199,8 +199,8 @@ Contributors:
         </dependency>
         <dependency>
             <groupId>k-octopus</groupId>
-            <artifactId>k-octopus-compute</artifactId>
-            <version>0.7.1</version>
+            <artifactId>k-octopus-repo</artifactId>
+            <version>0.7.2</version>
         </dependency>
     </dependencies>
 
