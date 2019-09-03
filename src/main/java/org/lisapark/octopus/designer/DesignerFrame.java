@@ -609,7 +609,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                         // Run model on remote server
                         outputTxt.append("\n\nRunning model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n\n");
                         String graph = processingModelGraph.toJson().toString();
-                        List<String> output = RuntimeUtils.runRemoteModel(serviceUrl, graph);
+                        List<String> output = RuntimeUtils.runRemote(serviceUrl, graph);
                         // report remote processing to the output window
                         output.forEach((item) -> {
                             outputTxt.append(item);
