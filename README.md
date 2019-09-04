@@ -1,7 +1,7 @@
 # K-Octopus Designer 
 ## Common info and requirements
 Octopus platform is built on a set of processors. Processors can be organized in the Model to perform processing workflow. There are four distinguish types of processors:
-1. **Source processors**, that allow Octopus model to connect to multiple data source, that can include Relational Databases, NoSQL databases, distributed data storage like Hadoop, File systems, Streaming data, media file and so on;
+1. **Source processors**, that allow Octopus model to connect to multiple data sources, that can include Relational Databases, NoSQL databases, distributed data storage like Hadoop, File systems, Streaming data, media file and so on;
 2. **Data transformation processors**. This kind of processors perform actual data processing. They can do this by themselves or by delegating data processing to the external general purpose computational engines like Spark, Flink, Hadoop and so on;
 3. **Sink processors**. This kind of processors support output of processed data. In some respect Sink processors are mirroring the Source processors and basically should be able to output data into all supported by Source processors data storage's and feeds;
 4. **Pipeline processors**. Those processors provide support for simple Processing flows by orchestrating a sequential execution of multiple Models in the specified order. Each pipeline processor ia a wrapper arround Model, so graph diagram it would be the same "processor based" execution graph. This is correct, Octopus provides support of workflows built on Processing models. So, potentially is it possible to run multilayered executioin graph. Orchedtration of such complex workflows is a real chalange, but potentially this is possible.
