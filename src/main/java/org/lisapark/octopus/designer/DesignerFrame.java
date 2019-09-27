@@ -62,7 +62,7 @@ import java.util.List;
 
 //import org.apache.lucene.document.Document;
 import org.lisapark.koctopus.core.graph.Graph;
-import org.lisapark.koctopus.core.graph.GraphUtils;
+import org.lisapark.koctopus.repo.graph.GraphUtils;
 import org.lisapark.koctopus.core.lucene.ModelLuceneIndex;
 import org.lisapark.koctopus.core.runtime.AbstractRunner;
 import org.lisapark.koctopus.core.runtime.RuntimeUtils;
