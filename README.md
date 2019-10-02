@@ -42,14 +42,12 @@ Clone k-octopus-designer repository to octopus directory
 
 > $ git clone https://github.com/a-matrixlab/k-octopus-designer.git
 
+> git checkout k-octopus-designer_0.7.3
 
 The core code of K-Octopus Designer was developed in 2012-2013. A lot of things changed since that time and some libraries are not available on maven repository, or hard to find. To resolve this issue we are providing a script to manually install all such artifacts.
 
 > $ k-octopus-designer/maven-inst.sh
 
-If you do not want to pollute your local maven repository, you can go to Dropbox and download jar file:
-
-https://www.dropbox.com/preview/Octopus-Designer/octopus-designer-0.7.1-jar-with-dependencies.jar
 
 ## Running K-Octopus Designer
 
