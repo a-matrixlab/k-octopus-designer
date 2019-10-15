@@ -53,6 +53,10 @@ The core code of K-Octopus Designer was developed in 2012-2013. A lot of things 
 
 The main purpose of K-Octopus Designer is to build Processing Model Execution Graph. Graph representation is a Json file and you can run it even from Postman.
 
+To run Designer from "octopus/k-octopus-designer/target" directory:
+
+> $ java -jar k-octopus-designer-0.7.3-jar-with-dependencies.jar
+
 We would recommend to start from installation on single laptop. After you run Designer, go to File menu and select "Open..." option. You'll get dialog box that you can use to navigate to 
 
 > k-octopus-designer/src/main/resources/model_json_files/SMAmodel_local.json
@@ -72,7 +76,7 @@ So, you can grab this Json and run it from Postman.
 
 Before doing this, please run k-octopus-compute from "octopus/k-octopus-compute/target" directory:
 
-> $ java -jar k-octopus-compute-0.7.1-jar-with-dependencies.jar
+> $ java -jar k-octopus-compute-0.7.3-jar-with-dependencies.jar
 
 ![K-Octopus Designer](https://github.com/a-matrixlab/k-octopus-designer/blob/master/Screenshot%20from%202019-08-25%2017-15-49.png)
 
