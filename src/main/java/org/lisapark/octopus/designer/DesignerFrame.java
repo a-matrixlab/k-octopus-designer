@@ -64,8 +64,10 @@ import java.util.List;
 import org.lisapark.koctopus.core.graph.Graph;
 import org.lisapark.koctopus.repo.graph.GraphUtils;
 import org.lisapark.koctopus.core.lucene.ModelLuceneIndex;
-import org.lisapark.koctopus.core.runtime.AbstractRunner;
+import org.lisapark.koctopus.repo.AbstractRunner;
 import org.lisapark.koctopus.core.runtime.RuntimeUtils;
+import org.lisapark.koctopus.core.sink.external.AbstractExternalSink;
+import org.lisapark.koctopus.repo.KosCache;
 import org.lisapark.koctopus.util.Pair;
 import org.openide.util.Exceptions;
 
@@ -132,6 +134,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      */
     private LabelStatusBarItem modelNameStatusItem;
     private JTextArea outputTxt;
+    
+    private KosCache kosCache;
 
     private static final String DEFAILT_TRANS_URL = "redis://localhost";
 
@@ -146,6 +150,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
     }
 
     private void init() {
+        
+        this.kosCache = new KosCache();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         initializeDockableBarManager();
@@ -424,7 +430,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      * give this data to the appropriate views.
      */
     void loadInitialDataFromRepository() throws RepositoryException {
-        List<ExternalSink> sinkTemplates = repository.getAllExternalSinkTemplates();
+        List<AbstractExternalSink> sinkTemplates = repository.getAllExternalSinkTemplates();
         palettePanel.setExternalSinks(sinkTemplates);
 
         List<AbstractExternalSource> sourceTemplates = repository.getAllExternalSourceTemplates();
@@ -601,6 +607,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                         outputTxt.append("\nRunning model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n\n");
                         runner.setStandardOut(stream);
                         runner.setStandardError(stream);
+                        runner.setKoCache(kosCache);
                         runner.setGraph(processingModelGraph);
                         runner.init();
                         runner.execute();
@@ -623,6 +630,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                     outputTxt.append("\n\n" + ex.getLocalizedMessage() + "\n");
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
+                    outputTxt.append("\n\n" + ex.getLocalizedMessage() + "\n");
                 }
             }
         }

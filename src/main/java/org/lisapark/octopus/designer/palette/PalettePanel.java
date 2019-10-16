@@ -29,6 +29,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Locale;
+import org.lisapark.koctopus.core.sink.external.AbstractExternalSink;
 
 /**
  * @author dave sinclair(david.sinclair@lisa-park.com)
@@ -36,7 +37,7 @@ import java.util.Locale;
 public class PalettePanel extends JPanel {
 
     private NodeListModel<AbstractProcessor> processorListModel;
-    private NodeListModel<ExternalSink> externalSinkListModel;
+    private NodeListModel<AbstractExternalSink> externalSinkListModel;
     private NodeListModel<AbstractExternalSource> externalSourceListModel;
 
     private final NodeListCellRenderer cellRenderer = new NodeListCellRenderer();
@@ -179,7 +180,7 @@ public class PalettePanel extends JPanel {
         externalSourceListModel.setData(externalSources);
     }
 
-    public void setExternalSinks(java.util.List<ExternalSink> sinks) {
+    public void setExternalSinks(java.util.List<AbstractExternalSink> sinks) {
         externalSinkListModel.setData(sinks);
     }
 
@@ -197,6 +198,7 @@ public class PalettePanel extends JPanel {
     private static class ListWithToolTip extends JList {
         // This method is called as the cursor moves within the list.
 
+        @Override
         public String getToolTipText(MouseEvent evt) {
             int index = locationToIndex(evt.getPoint());
 
