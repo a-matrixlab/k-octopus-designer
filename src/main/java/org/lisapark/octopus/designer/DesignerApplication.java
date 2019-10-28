@@ -12,25 +12,29 @@ package org.lisapark.octopus.designer;
 
 import com.jidesoft.plaf.LookAndFeelFactory;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.*;
 import org.apache.commons.lang.SystemUtils;
-import org.lisapark.koctopus.core.OctopusRepository;
 import org.lisapark.koctopus.core.RepositoryException;
-import org.lisapark.koctopus.repo.RedisRepository;
 import org.openide.util.Exceptions;
 
 /**
  * @author dave sinclair(david.sinclair@lisa-park.com)
  */
 public class DesignerApplication {
+    
+    
+    private static final String[] REPO_PATH = {"file:///home/alexmy/.m2/repository/k-octopus/k-octopus-processors/0.7.3/k-octopus-processors-0.7.3-jar-with-dependencies.jar"};
+
 
     public static void main(String[] args) throws IOException {
         try {
             // Reference to the license
             com.jidesoft.utils.Lm.verifyLicense("Lisa Park", "Octopus Designer", "zS6180HbbJpdVY1yArGP4blHYyvg6mK2");
 
-            OctopusRepository repository = new RedisRepository();
-
+            List<String> repoPathList = new ArrayList<>(Arrays.asList(REPO_PATH));
             String os = SystemUtils.OS_NAME;
             if (os.toLowerCase().startsWith("windows")) {
                 LookAndFeelFactory.installDefaultLookAndFeelAndExtension();
@@ -38,7 +42,7 @@ public class DesignerApplication {
                 LookAndFeelFactory.installJideExtension(5);
             }
 
-            final DesignerFrame designerFrame = new DesignerFrame(repository);
+            final DesignerFrame designerFrame = new DesignerFrame(repoPathList);
             designerFrame.loadInitialDataFromRepository();
             SwingUtilities.invokeLater(() -> {
                 designerFrame.setVisible(true);

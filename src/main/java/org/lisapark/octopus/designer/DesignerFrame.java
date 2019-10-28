@@ -58,16 +58,18 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 //import org.apache.lucene.document.Document;
 import org.lisapark.koctopus.core.graph.Graph;
-import org.lisapark.koctopus.repo.graph.GraphUtils;
+import org.lisapark.koctopus.repo.utils.GraphUtils;
 import org.lisapark.koctopus.core.lucene.ModelLuceneIndex;
 import org.lisapark.koctopus.repo.AbstractRunner;
 import org.lisapark.koctopus.core.runtime.RuntimeUtils;
 import org.lisapark.koctopus.core.sink.external.AbstractExternalSink;
-import org.lisapark.koctopus.repo.KosCache;
+import org.lisapark.koctopus.repo.RedisRepository;
+import org.lisapark.koctopus.repo.RepoCache;
 import org.lisapark.koctopus.util.Pair;
 import org.openide.util.Exceptions;
 
@@ -79,6 +81,7 @@ import org.openide.util.Exceptions;
 public class DesignerFrame extends DefaultDockableBarDockableHolder {
 
     private static final Logger LOG = LoggerFactory.getLogger(DesignerFrame.class);
+
     /**
      * This is the profile used for Jide's {@link DockingManager}. It allows it
      * to store layout information that will be persisted from one session of
@@ -92,7 +95,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      * They are used by the {@link DockingManager} to show a frame
      */
     private static final String PROPERTIES_KEY = "Properties";
-    private static final String OUTPUT_KEY = "Output";
+    private static final String OUTPUT_KEY = "K-Output";
     private static final String PALETTE_KEY = "Palette";
     /**
      * This is the current {@link ProcessingModel} we are working on
@@ -134,24 +137,27 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      */
     private LabelStatusBarItem modelNameStatusItem;
     private JTextArea outputTxt;
-    
-    private KosCache kosCache;
+
+    private RepoCache kosCache;
 
     private static final String DEFAILT_TRANS_URL = "redis://localhost";
 
+    private final List<String> repoPath;
+
     /**
      *
-     * @param repository
+     * @param repoPath
      */
-    public DesignerFrame(OctopusRepository repository) {
-        super("Octopus");
-        this.repository = repository;
+    public DesignerFrame(List<String> repoPath) {
+        super("K-Octopus");
+        this.repoPath = repoPath;
+        this.repository = new RedisRepository();
         init();
     }
 
     private void init() {
-        
-        this.kosCache = new KosCache();
+
+        this.kosCache = new RepoCache();
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         initializeDockableBarManager();
@@ -426,18 +432,30 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
     /**
      * This method will load all the initial data from the {@link #repository}.
      * This includes all the template {@link AbstractProcessor}s,
-     * {@link AbstractExternalSource}s and {@link ExternalSink}s. The method will then
-     * give this data to the appropriate views.
+     * {@link AbstractExternalSource}s and {@link AbstractExternalSink}s. The
+     * method will then give this data to the appropriate views.
+     * @throws org.lisapark.koctopus.core.RepositoryException
      */
-    void loadInitialDataFromRepository() throws RepositoryException {
-        List<AbstractExternalSink> sinkTemplates = repository.getAllExternalSinkTemplates();
+    public synchronized void loadInitialDataFromRepository() throws RepositoryException {
+
+        List<AbstractExternalSink> sinkTemplates = new ArrayList<>();
+        List<AbstractExternalSource> sourceTemplates = new ArrayList<>();
+        List<AbstractProcessor> processorTemplates = new ArrayList<>();
+        
+        repository.loadAllProcessors(sourceTemplates, sinkTemplates, processorTemplates);
+        
         palettePanel.setExternalSinks(sinkTemplates);
-
-        List<AbstractExternalSource> sourceTemplates = repository.getAllExternalSourceTemplates();
         palettePanel.setExternalSources(sourceTemplates);
-
-        List<AbstractProcessor> processorTemplates = repository.getAllProcessorTemplates();
         palettePanel.setProcessors(processorTemplates);
+
+//        List<AbstractExternalSink> sinkTemplates = repository.getAllExternalSinkTemplates(repoPath);
+//        palettePanel.setExternalSinks(sinkTemplates);
+//
+//        List<AbstractExternalSource> sourceTemplates = repository.getAllExternalSourceTemplates(repoPath);
+//        palettePanel.setExternalSources(sourceTemplates);
+//
+//        List<AbstractProcessor> processorTemplates = repository.getAllProcessorTemplates(repoPath);
+//        palettePanel.setProcessors(processorTemplates);
     }
 
     private void setCurrentProcessingModel(ProcessingModel currentProcessingModel) {
@@ -466,6 +484,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         }
         setVisible(false);
         dispose();
+
     }
 
     private class OpenAction extends AbstractAction {
