@@ -10,6 +10,7 @@
  */
 package org.lisapark.octopus.designer;
 
+import com.google.common.reflect.ClassPath;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jidesoft.action.CommandBar;
@@ -58,14 +59,17 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 //import org.apache.lucene.document.Document;
 import org.lisapark.koctopus.core.graph.Graph;
 import org.lisapark.koctopus.repo.utils.GraphUtils;
 import org.lisapark.koctopus.core.lucene.ModelLuceneIndex;
-import org.lisapark.koctopus.repo.AbstractRunner;
+import org.lisapark.koctopus.runner.AbstractRunner;
 import org.lisapark.koctopus.core.runtime.RuntimeUtils;
 import org.lisapark.koctopus.core.sink.external.AbstractExternalSink;
 import org.lisapark.koctopus.repo.RedisRepository;
@@ -429,11 +433,15 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         return viewMenu;
     }
 
+    static final String TOP_PACKAGE = "org.lisapark.koctopus.processors";
+    private static final String[] REPO_PATH = {"file:///home/alexmy/.m2/repository/k-octopus/k-octopus-processors/0.7.3/k-octopus-processors-0.7.3-jar-with-dependencies.jar"};
+
     /**
      * This method will load all the initial data from the {@link #repository}.
      * This includes all the template {@link AbstractProcessor}s,
      * {@link AbstractExternalSource}s and {@link AbstractExternalSink}s. The
      * method will then give this data to the appropriate views.
+     *
      * @throws org.lisapark.koctopus.core.RepositoryException
      */
     public synchronized void loadInitialDataFromRepository() throws RepositoryException {
@@ -441,21 +449,12 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         List<AbstractExternalSink> sinkTemplates = new ArrayList<>();
         List<AbstractExternalSource> sourceTemplates = new ArrayList<>();
         List<AbstractProcessor> processorTemplates = new ArrayList<>();
-        
-        repository.loadAllProcessors(sourceTemplates, sinkTemplates, processorTemplates);
-        
+
+        loadAllProcessors(sourceTemplates, sinkTemplates, processorTemplates);
+
         palettePanel.setExternalSinks(sinkTemplates);
         palettePanel.setExternalSources(sourceTemplates);
         palettePanel.setProcessors(processorTemplates);
-
-//        List<AbstractExternalSink> sinkTemplates = repository.getAllExternalSinkTemplates(repoPath);
-//        palettePanel.setExternalSinks(sinkTemplates);
-//
-//        List<AbstractExternalSource> sourceTemplates = repository.getAllExternalSourceTemplates(repoPath);
-//        palettePanel.setExternalSources(sourceTemplates);
-//
-//        List<AbstractProcessor> processorTemplates = repository.getAllProcessorTemplates(repoPath);
-//        palettePanel.setProcessors(processorTemplates);
     }
 
     private void setCurrentProcessingModel(ProcessingModel currentProcessingModel) {
@@ -485,6 +484,63 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
         setVisible(false);
         dispose();
 
+    }
+
+    /**
+     * 
+     * @param sourceTemplates
+     * @param sinkTemplates
+     * @param processorTemplates 
+     */
+    private void loadAllProcessors(List<AbstractExternalSource> sourceTemplates, List<AbstractExternalSink> sinkTemplates, List<AbstractProcessor> processorTemplates) {
+        List<String> repoPathList = new ArrayList<>(Arrays.asList(REPO_PATH));
+
+        repoPathList.forEach((String item) -> {
+            try {
+                URLClassLoader child = new URLClassLoader(new URL[]{new URL(item)}, this.getClass().getClassLoader());
+                
+                ClassPath classpath = ClassPath.from(child);
+                classpath.getAllClasses().forEach((classInfo) -> {
+                    if (classInfo.getPackageName().contains(TOP_PACKAGE + ".source")) {
+                        if (classInfo.toString().indexOf("$") <= 0) {
+                            try {
+                                Class<?> clazz = classInfo.load();
+                                AbstractExternalSource source = (AbstractExternalSource) clazz.newInstance();
+                                sourceTemplates.add(source.newTemplate());
+                            } catch (InstantiationException | IllegalAccessException ex) {
+                                LOG.error(ex.getMessage());
+                            }
+                        }
+                    } else if (classInfo.getPackageName().contains(TOP_PACKAGE + ".sink")) {
+                        if (classInfo.getName().indexOf("$") <= 0) {
+                            try {
+                                Class<?> clazz = classInfo.load();
+                                AbstractExternalSink sink = (AbstractExternalSink) clazz.newInstance();
+                                sinkTemplates.add(sink.newTemplate());
+                            } catch (InstantiationException | IllegalAccessException ex) {
+                                LOG.error(ex.getMessage());
+                            }
+                        }
+                    } else if (classInfo.getPackageName().contains(TOP_PACKAGE + ".processor")
+                            || classInfo.getPackageName().contains(TOP_PACKAGE + ".pipe")) {
+                        if (classInfo.getName().indexOf("$") <= 0) {
+                            try {
+                                Class<?> clazz = classInfo.load();
+                                AbstractProcessor processor = (AbstractProcessor) clazz.newInstance();
+                                processorTemplates.add(processor.newTemplate());
+                            } catch (InstantiationException | IllegalAccessException ex) {
+                                LOG.error(ex.getMessage());
+                            }
+                        }
+
+                    }
+                });
+            } catch (MalformedURLException ex) {
+                LOG.error(ex.getMessage());
+            } catch (IOException ex) {
+                LOG.error(ex.getMessage());
+            }
+        });
     }
 
     private class OpenAction extends AbstractAction {
