@@ -26,7 +26,7 @@ import org.openide.util.Exceptions;
 public class DesignerApplication {
     
     
-    private static final String[] REPO_PATH = {"file:///Users/alexmylnikov1/.m2/repository/k-octopus/k-octopus-processors/0.7.3/k-octopus-processors-0.7.3-jar-with-dependencies.jar"};
+    private static final String[] REPO_PATH = {"file:///home/alexmy/.m2/repository/k-octopus/k-octopus-processors/0.7.3/k-octopus-processors-0.7.3-jar-with-dependencies.jar"};
     static final String TOP_PACKAGE = "org.lisapark.koctopus.processors";
 
     public static void main(String[] args) throws IOException {

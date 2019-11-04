@@ -35,7 +35,6 @@ import org.lisapark.octopus.designer.canvas.CanvasPanel;
 import org.lisapark.octopus.designer.canvas.NodeSelectionListener;
 import org.lisapark.octopus.designer.palette.PalettePanel;
 import org.lisapark.octopus.designer.properties.PropertiesPanel;
-import org.lisapark.koctopus.core.OctopusRepository;
 import org.lisapark.koctopus.core.RepositoryException;
 import org.lisapark.octopus.swing.BaseStyledButton;
 import org.lisapark.octopus.swing.ComponentFactory;
@@ -71,10 +70,11 @@ import org.lisapark.koctopus.core.lucene.ModelLuceneIndex;
 import org.lisapark.koctopus.runner.AbstractRunner;
 import org.lisapark.koctopus.core.runtime.RuntimeUtils;
 import org.lisapark.koctopus.core.sink.external.AbstractExternalSink;
-import org.lisapark.koctopus.repo.RedisRepository;
+import org.lisapark.koctopus.repo.OctopusRepository;
 import org.lisapark.koctopus.repo.RepoCache;
 import org.lisapark.koctopus.util.Pair;
 import org.openide.util.Exceptions;
+import org.lisapark.koctopus.core.Repository;
 
 /**
  * This is the main {@link JFrame} for the Octopus Designer application.
@@ -110,7 +110,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      * The repository is used for retrieving and saving different Octopus
      * artifacts
      */
-    private final OctopusRepository repository;
+    private final Repository repository;
     /**
      * These are the main views for the designer application
      */
@@ -154,7 +154,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
     public DesignerFrame(List<String> repoPath) {
         super("K-Octopus");
         this.repoPath = repoPath;
-        this.repository = new RedisRepository();
+        this.repository = new OctopusRepository();
         init();
     }
 
@@ -438,6 +438,8 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
      * {@link AbstractExternalSource}s and {@link AbstractExternalSink}s. The
      * method will then give this data to the appropriate views.
      *
+     * @param repoPaths
+     * @param topPackage
      * @throws org.lisapark.koctopus.core.RepositoryException
      */
     public synchronized void loadInitialDataFromRepository(String[] repoPaths, String topPackage) throws RepositoryException {
