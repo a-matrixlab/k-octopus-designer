@@ -688,7 +688,7 @@ public class DesignerFrame extends DefaultDockableBarDockableHolder {
                         outputTxt.append("\nRunning model '" + currentProcessingModel.getName() + "'. \nPlease wait...\n\n");
                         runner.setStandardOut(stream);
                         runner.setStandardError(stream);
-                        runner.setKoCache(kosCache);
+                        runner.setRepoCache(kosCache);
                         runner.setGraph(processingModelGraph);
                         runner.init();
                         runner.execute();
