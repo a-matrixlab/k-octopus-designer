@@ -15,7 +15,7 @@ Contributors:
     
     <groupId>octopus</groupId>
     <artifactId>octopus-designer</artifactId>
-    <version>0.7.3</version>
+    <version>0.7.4</version>
     <packaging>jar</packaging>
 
     <url>http://maven.apache.org</url>
@@ -200,7 +200,7 @@ Contributors:
         <dependency>
             <groupId>k-octopus</groupId>
             <artifactId>k-octopus-repo</artifactId>
-            <version>0.7.3</version>
+            <version>0.7.4</version>
         </dependency>
     </dependencies>
 
