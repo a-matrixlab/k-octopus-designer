@@ -25,3 +25,6 @@ hs_err_pid*
 
 # README files
 *.md
+
+# lucene and jide config files
+_*.*
